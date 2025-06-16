@@ -26,6 +26,9 @@ public class UserAccount implements UserDetails {
         @Column(unique = true)
         private String nickname;  // Никнейм
 
+
+
+
         // Методы для Spring Security
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

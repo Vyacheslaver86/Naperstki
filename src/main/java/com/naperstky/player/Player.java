@@ -1,8 +1,9 @@
 package com.naperstky.player;
 
+import com.naperstky.security.UserAccount;
 import jakarta.persistence.*;
 
-@Entity
+    @Entity
 @Table(name ="players")
 public class Player {
 @Id
@@ -10,20 +11,14 @@ public class Player {
 private long id;
 
 
-    public Player() {
 
-    }
-
-
-    @OneToOne
-    @JoinColumn(name = "user_account_id", nullable = false)
-    private double balance = 1000.0;  // Игровой баланс
-  @Column(name ="wins")
-    private int wins;
-
-  // Количество побед
-    @Column(name ="losses")
-    private int losses;
+        @OneToOne
+        @JoinColumn(name = "user_account_id", referencedColumnName = "id")
+        private UserAccount userAccount;
+        private int score = 0;          // Общий счёт
+        private int gamesPlayed = 0;    // Количество игр
+        private int wins = 0;           // Победы
+        private int currentStreak = 0;
 
 
 
@@ -36,15 +31,6 @@ private long id;
 
 
 
-
-
-
-//          {
-//              "moneyBank" : 1500;
-//         }
-//          {
-//              "moneyBank" : 3000;
-//          }
 
 
 }
