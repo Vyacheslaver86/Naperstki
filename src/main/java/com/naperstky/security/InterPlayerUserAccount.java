@@ -1,17 +1,18 @@
 package com.naperstky.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class InterPlayerUserAccount extends UserAccount{
+public class InterPlayerUserAccount implements UserDetails {
 
 
     private final UserAccount userAccount;
 
-    public InterPlayerUserAccount(UserAccount userAccount){
+    public InterPlayerUserAccount(UserAccount userAccount) {
 
-        this.userAccount=userAccount;
+        this.userAccount = userAccount;
 
 
     }
@@ -19,36 +20,36 @@ public class InterPlayerUserAccount extends UserAccount{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return super.getAuthorities();
+        return userAccount.getAuthorities();
     }
 
     @Override
     public String getPassword() {
-        return super.getPassword();
+        return userAccount.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return super.getUsername();
+        return userAccount.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return super.isEnabled();
+        return true;
     }
 }

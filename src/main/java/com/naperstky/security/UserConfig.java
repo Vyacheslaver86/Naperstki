@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+/*
 @Configuration
 public class UserConfig {
 
@@ -19,4 +20,4 @@ public class UserConfig {
                                 .build();
         return new InMemoryUserDetailsManager(user);
     }
-}
+}*/
