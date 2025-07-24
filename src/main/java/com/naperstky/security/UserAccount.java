@@ -1,6 +1,7 @@
 package com.naperstky.security;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "user_accounts")
 public class UserAccount implements UserDetails {
@@ -25,8 +27,7 @@ public class UserAccount implements UserDetails {
     private String password;  // Зашифрованный пароль
 
     @Column(unique = true)
-    private String nickname;  // Никнейм
-
+    private String nickname;  // Никней
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

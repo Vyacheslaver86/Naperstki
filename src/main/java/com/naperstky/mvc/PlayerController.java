@@ -14,7 +14,7 @@ public class PlayerController {
         System.out.println();
         System.out.println();
         System.out.println();
-        System.out.println("программа работает");
+        System.out.println("PROGRAM RUNNING");
         System.out.println();
         System.out.println();
         System.out.println();
