@@ -1,4 +1,50 @@
 package com.naperstky.mvc.service;
 
+import com.naperstky.mvc.PlayerDAO;
+import com.naperstky.player.Player;
+import com.naperstky.security.UserAccount;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+@Service
+@RequiredArgsConstructor
 public class PlayerService {
+
+    private final PlayerDAO playerDAO;
+
+    @Autowired // Аннотация обязательна для Spring
+    public PlayerService(PlayerDAO playerDAO) {
+        this.playerDAO = playerDAO;
+    }
+
+
+
+    public Player getPlayerByUser(UserAccount user) {
+        return playerDAO.findByUserAccountId(user.getId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Player not found"));
+    }
+
+    public Player getPlayerByUserWithCreation(UserAccount user) {
+        return playerDAO.findByUserAccountId(user.getId())
+                .orElseGet(() -> {
+                    Player player = new Player();
+                    player.setUserAccount(user);
+                    player.setCoins(10);
+                    return playerDAO.save(player);
+                });
+    }
+
+    public void updatePlayerStats(Player player, boolean isWin) {
+        if (isWin) {
+            player.incrementWins();
+            player.addCoins(20);
+        } else {
+            player.incrementLoses();
+        }
+        playerDAO.save(player);
+    }
 }

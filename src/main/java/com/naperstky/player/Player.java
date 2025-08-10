@@ -7,14 +7,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
-@Data
 @Entity
+@Data
+
 @Table(name = "players")
 public class Player {
     @Id
@@ -24,6 +25,12 @@ public class Player {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
     private UserAccount userAccount;
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+
+
 
     @Column(name = "total_games_played")
     private int gamesPlayed = 0;
@@ -36,6 +43,9 @@ public class Player {
 
     @Column(name = "loses")
     private int loses = 0;
+    @Column(name = "coins")
+    private int coins = 0;
+
 
     // Статистика жульничества
     @Column(name = "cheat_attempts")
@@ -98,6 +108,15 @@ public class Player {
     public double getCheatDetectionRate() {
         return cheatAttempts > 0 ? (double) caughtCheats / cheatAttempts * 100 : 0;
     }
+    public void addCoins(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Количество монет не может быть отрицательным");
+        }
+        this.coins += amount;
+    }
+
+
+
 
     // Основные методы игрока
     public void incrementGamesPlayed() {

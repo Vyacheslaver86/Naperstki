@@ -36,9 +36,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/**").permitAll()            // если запросили страницу с путём /auth/... , то доступ разршён всем без данных
+                        .requestMatchers("/admin/**").hasRole("ADMIN")       // если запросили страницу с путём /admin/... , то доступ разршён только пользователю с правами админа
+                        .anyRequest().authenticated()       // любой другой запрос требует ввода данных (юзер и пароль)
                 )
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
