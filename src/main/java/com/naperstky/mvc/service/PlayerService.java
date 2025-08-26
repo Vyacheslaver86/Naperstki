@@ -4,7 +4,7 @@ import com.naperstky.mvc.PlayerDAO;
 import com.naperstky.player.Player;
 import com.naperstky.security.UserAccount;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,16 +16,13 @@ public class PlayerService {
 
     private final PlayerDAO playerDAO;
 
-    @Autowired // Аннотация обязательна для Spring
-    public PlayerService(PlayerDAO playerDAO) {
-        this.playerDAO = playerDAO;
-    }
 
 
 
-    public Player getPlayerByUser(UserAccount user) {
-        return playerDAO.findByUserAccountId(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Player not found"));
+
+    public Player getPlayerByUser(Long userId) {
+        return playerDAO.findByUserAccountId(userId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Player not found for user ID"+userId));
     }
 
     public Player getPlayerByUserWithCreation(UserAccount user) {

@@ -1,8 +1,16 @@
-package com.naperstky.security;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.naperstky.security.JwtTokenUtil;
+import com.naperstky.security.UserRepository;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,63 +18,57 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import org.springframework.util.StringUtils;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
-    private final JwtTokenUtil jwtTokenUtil;
-    private final UserDetailsService userDetailsService;
 
-    public JwtAuthFilter(JwtTokenUtil jwtTokenUtil,
-                         UserDetailsService userDetailsService) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userDetailsService = userDetailsService;
-    }
+    private final JwtTokenUtil jwtTokenUtil;
+    private final UserRepository userRepository;
+@Autowired
+public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
+    this.jwtTokenUtil = jwtTokenUtil;
+    this.userRepository = userRepository;
+}
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        final String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtTokenUtil.validateToken(jwt)) {
-                String username = jwtTokenUtil.getUsernameFromToken(jwt);
+            final String jwt = authHeader.substring(7);
+            final String username = jwtTokenUtil.getUsernameFromToken(jwt);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
-
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                userRepository.findByUsername(username)
+                        .ifPresent(user -> {
+                            if (jwtTokenUtil.validateToken(jwt)) {  // Теперь метод принимает только токен
+                                UsernamePasswordAuthenticationToken authToken =
+                                        new UsernamePasswordAuthenticationToken(
+                                                user,
+                                                null,
+                                                user.getAuthorities()
+                                        );
+                                authToken.setDetails(
+                                        new WebAuthenticationDetailsSource().buildDetails(request)
+                                );
+                                SecurityContextHolder.getContext().setAuthentication(authToken);
+                            }
+                        });
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         filterChain.doFilter(request, response);
     }
-
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
-        }
-        return null;
-    }
 }
-
-
-

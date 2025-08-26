@@ -26,9 +26,7 @@ public class Player {
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
     private UserAccount userAccount;
 
-    public void setUserAccount(UserAccount userAccount) {
-        this.userAccount = userAccount;
-    }
+
 
 
 
