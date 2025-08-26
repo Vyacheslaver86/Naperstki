@@ -1,3 +1,6 @@
+package com.naperstky.security;
+
+import com.naperstky.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,19 +20,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtAuthFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()  // ← РАЗРЕШАЕМ ВСЕ URL!
-                        .anyRequest().permitAll()            // ← РАЗРЕШАЕМ ВСЕ ЗАПРОСЫ!
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/players/test").permitAll()
+                        .requestMatchers("/register.html").permitAll()
+                        .requestMatchers("/login.html").permitAll()
+                        .requestMatchers("/static/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable())           // ← ОТКЛЮЧАЕМ форму логина
-                .httpBasic(basic -> basic.disable())         // ← ОТКЛЮЧАЕМ basic auth
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // ← ЗАКОММЕНТИРОВАНО!
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+               /* .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);*/
 
         return http.build();
     }

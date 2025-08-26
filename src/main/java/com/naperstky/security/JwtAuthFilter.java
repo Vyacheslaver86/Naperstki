@@ -1,3 +1,5 @@
+package com.naperstky.security;
+
 import com.naperstky.security.JwtTokenUtil;
 import com.naperstky.security.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -8,29 +10,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
 
+@Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
-@Autowired
-public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
-    this.jwtTokenUtil = jwtTokenUtil;
-    this.userRepository = userRepository;
-}
+
+    // Добавьте @Autowired для конструктора
+    @Autowired
+    public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userRepository = userRepository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -50,7 +47,7 @@ public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 userRepository.findByUsername(username)
                         .ifPresent(user -> {
-                            if (jwtTokenUtil.validateToken(jwt)) {  // Теперь метод принимает только токен
+                            if (jwtTokenUtil.validateToken(jwt)) {
                                 UsernamePasswordAuthenticationToken authToken =
                                         new UsernamePasswordAuthenticationToken(
                                                 user,
@@ -65,6 +62,7 @@ public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
                         });
             }
         } catch (Exception e) {
+            logger.error("JWT authentication error", e);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

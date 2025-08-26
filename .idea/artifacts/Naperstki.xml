@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Naperstki">
+    <output-path>$PROJECT_DIR$/out/artifacts/Naperstki</output-path>
+    <root id="archive" name="Naperstki.jar">
+      <element id="module-output" name="naprestki" />
+    </root>
+  </artifact>
+</component>
