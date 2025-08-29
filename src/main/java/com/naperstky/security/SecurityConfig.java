@@ -31,19 +31,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/players/test").permitAll()
-                        .requestMatchers("/register.html").permitAll()
-                        .requestMatchers("/login.html").permitAll()
-                        .requestMatchers("/static/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/**").permitAll()           // API аутентификации
+                        .requestMatchers("/api/players/test").permitAll()  // тестовый endpoint
+                        .requestMatchers("/register.html").permitAll()     // HTML страницы
+                        .requestMatchers("/login.html").permitAll()        // HTML страницы
+                        .requestMatchers("/static/**").permitAll()         // статические файлы
+                        .anyRequest().authenticated()                      // всё остальное требует аутентификации
                 )
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(form -> form.disable())                     // отключаем форму логина Spring
+                .httpBasic(basic -> basic.disable())                   // отключаем basic auth
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
-               /* .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);*/
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
