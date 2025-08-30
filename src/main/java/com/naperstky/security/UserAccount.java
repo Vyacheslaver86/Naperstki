@@ -1,71 +1,60 @@
 package com.naperstky.security;
 
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-@Setter
 @Getter
+@Setter
 @Table(name = "user_accounts")
 public class UserAccount implements UserDetails {
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .toList();
-    }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(unique = true, nullable = false)
-    private String username;  // Логин
+    private String username;
 
     @Column(nullable = false)
-    private String password;  // Зашифрованный пароль
+    private String password;
 
     @Column(unique = true)
-    private String nickname;  // Никней
+    private String nickname;
 
+    // ✅ ПРАВИЛЬНАЯ АННОТАЦИЯ ДЛЯ РОЛЕЙ
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id")  // ← СВЯЗЬ ПО user_id
+    )
+    @Column(name = "roles")  // ← СТОЛБЕЦ В ТАБЛИЦЕ user_roles
     private Set<String> roles = new HashSet<>();
 
-
-    public Long getId() {
-        return id;
+    public UserAccount() {
+        this.roles.add("USER");  // роль по умолчанию
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    // Методы для Spring Security
-
-    @Override
-    public String getPassword() {
-        return this.password;
+    // ✅ ОБЯЗАТЕЛЬНО ДОБАВЬТЕ ЭТОТ МЕТОД!
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     @Override
-    public String getUsername() {
-        return this.username;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -88,4 +77,3 @@ public class UserAccount implements UserDetails {
         return true;
     }
 }
-

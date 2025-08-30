@@ -22,8 +22,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
 
-    // Добавьте @Autowired для конструктора
-    @Autowired
     public JwtAuthFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepository) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userRepository = userRepository;
@@ -33,12 +31,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
-        // Пропускаем OPTIONS запросы (для CORS)
-        if ("OPTIONS".equals(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -68,9 +60,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         });
             }
         } catch (Exception e) {
+            // Логируем ошибку, но не прерываем цепочку
             logger.error("JWT authentication error", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
         }
 
         filterChain.doFilter(request, response);
