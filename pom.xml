@@ -51,13 +51,13 @@
             <artifactId>jjwt-api</artifactId>
             <version>${jjwt.version}</version>
         </dependency>
-
-        <!-- УДАЛИТЬ ЭТУ ЗАВИСИМОСТЬ -->
-        <!-- <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
             <scope>runtime</scope>
-        </dependency> -->
+        </dependency>
+
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

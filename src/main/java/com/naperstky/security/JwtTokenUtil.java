@@ -11,35 +11,45 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+
 @Component
 public class JwtTokenUtil {
 
     @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${app.jwt.expiration-minutes}")
-    private int jwtExpirationMinutes;
+    @Value("${app.jwt.expiration-minutes:1440}")
+    private int expirationMinutes;
+
+    private SecretKey getSigningKey() {
+        // Преобразуем строку в байты для ключа
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() +
-                        TimeUnit.MINUTES.toMillis(jwtExpirationMinutes)))
-                .signWith(getSigningKey(), Jwts.SIG.HS256)
+                        expirationMinutes * 60 * 1000L)) // минуты в миллисекунды
+                .signWith(getSigningKey())
                 .compact();
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                    .verifyWith(getSigningKey())
-                    .build()
-                    .parseSignedClaims(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
     }
 
     public String getUsernameFromToken(String token) {
@@ -51,8 +61,16 @@ public class JwtTokenUtil {
                 .getSubject();
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
-        return Keys.hmacShaKeyFor(keyBytes);
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("JWT validation error: " + e.getMessage());
+            return false;
+        }
     }
 }

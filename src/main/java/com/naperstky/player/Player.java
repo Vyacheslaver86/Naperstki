@@ -6,6 +6,9 @@ import com.naperstky.security.UserAccount;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 
 import java.util.ArrayList;
@@ -14,8 +17,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Entity
-@Data
-
+@Getter
+@Setter
+@ToString(exclude = "userAccount")
 @Table(name = "players")
 public class Player {
     @Id
@@ -25,9 +29,6 @@ public class Player {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
     private UserAccount userAccount;
-
-
-
 
 
     @Column(name = "total_games_played")
@@ -106,14 +107,13 @@ public class Player {
     public double getCheatDetectionRate() {
         return cheatAttempts > 0 ? (double) caughtCheats / cheatAttempts * 100 : 0;
     }
+
     public void addCoins(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Количество монет не может быть отрицательным");
         }
         this.coins += amount;
     }
-
-
 
 
     // Основные методы игрока
@@ -131,25 +131,8 @@ public class Player {
         this.currentStreak = 0;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Player player = (Player) o;
-        return gamesPlayed == player.gamesPlayed &&
-                wins == player.wins &&
-                currentStreak == player.currentStreak &&
-                Objects.equals(id, player.id) &&
-                Objects.equals(userAccount, player.userAccount);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, userAccount, gamesPlayed, wins, currentStreak);
-    }
 }
-
-
 //
  //     Player player1;
  //     Player player2;

@@ -3,6 +3,7 @@ package com.naperstky.security;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @Setter
+@ToString(exclude = "password")
 @Table(name = "user_accounts")
 public class UserAccount implements UserDetails {
 
@@ -76,4 +78,8 @@ public class UserAccount implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+
+
 }

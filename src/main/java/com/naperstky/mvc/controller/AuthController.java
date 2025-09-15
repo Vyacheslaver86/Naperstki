@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,20 +49,36 @@ public class AuthController {
     }
 
     // ... остальной код
-
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.username(),  // ← правильно для record
-                            request.password()   // ← правильно для record
-                    )
-            );
+            System.out.println("=== LOGIN ATTEMPT ===");
+            System.out.println("Username: " + request.username());
 
-            UserAccount user = (UserAccount) authentication.getPrincipal();
+            UserAccount user = userRepository.findByUsername(request.username())
+                    .orElseThrow(() -> {
+                        System.out.println("❌ User not found: " + request.username());
+                        return new BadCredentialsException("User not found");
+                    });
+
+            System.out.println("✅ User found: " + user.getUsername());
+
+            // Проверяем пароль
+            if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+                System.out.println("❌ Password mismatch!");
+                System.out.println("Input password: " + request.password());
+                System.out.println("Stored password: " + user.getPassword());
+                throw new BadCredentialsException("Invalid password");
+            }
+
+            System.out.println("✅ Password matches!");
+
             String token = jwtTokenUtil.generateToken(user);
+            System.out.println("✅ Token generated: " + token);
+
+            // Проверим, что токен валиден
+            boolean isValid = jwtTokenUtil.validateToken(token);
+            System.out.println("✅ Token validation: " + isValid);
 
             return ResponseEntity.ok(Map.of("token", token));
 
@@ -69,15 +86,25 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Неверные учетные данные");
         } catch (Exception e) {
+            System.out.println("❌ Login error: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка сервера: " + e.getMessage());
         }
     }
 
+
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         try {
+            System.out.println("=== REGISTRATION START ===");
+            System.out.println("Username: " + request.username());
+            System.out.println("Password: " + request.password());
+            System.out.println("Nickname: " + request.nickname());
+
             if (userRepository.existsByUsername(request.username())) {
+                System.out.println("User already exists!");
                 return ResponseEntity.badRequest().body("Username already exists");
             }
 
@@ -88,16 +115,20 @@ public class AuthController {
 
             // ✅ ЯВНО УСТАНАВЛИВАЕМ РОЛИ
             user.setRoles(new HashSet<>(Set.of("USER")));
+            System.out.println("Roles before save: " + user.getRoles());
 
-            userRepository.save(user);
+            UserAccount savedUser = userRepository.save(user);
+            System.out.println("User ID after save: " + savedUser.getId());
 
-            // ✅ ПРОВЕРКА
-            System.out.println("User ID: " + user.getId());
-            System.out.println("Roles: " + user.getRoles());
+            // Проверим, что сохранилось в БД
+            UserAccount dbUser = userRepository.findById(savedUser.getId()).orElseThrow();
+            System.out.println("Roles from DB: " + dbUser.getRoles());
 
+            System.out.println("=== REGISTRATION SUCCESS ===");
             return ResponseEntity.ok("User registered successfully");
 
         } catch (Exception e) {
+            System.out.println("Registration error: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
