@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class CheatCoin {
 
 
-        public CheatCoin() {} // <- Добавьте это
+        public CheatCoin() {}
 
 
 
