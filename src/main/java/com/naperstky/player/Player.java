@@ -69,11 +69,12 @@ public class Player {
     public void init() {
         if (this.cheatCoinsList.isEmpty()) {
             this.cheatCoinsList.add(new CheatCoin(CheatType.HIDE_IN_SLEEVE));
+            this.cheatCoinsList.add(new CheatCoin(CheatType.ADD_CUP));
             this.cheatCoinsList.add(new CheatCoin(CheatType.SWAP_CUPS));
         }
     }
 
-    // Методы для работы с жульничеством
+    // Метод для использования монетки
     public boolean useCheatCoin(CheatType type) {
         Optional<CheatCoin> coin = cheatCoinsList.stream()
                 .filter(c -> c.getType() == type && !c.isUsed())
