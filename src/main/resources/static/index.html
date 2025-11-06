@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наперстки - Игра</title>
+    <style>
+        /* ==================== CSS СТИЛИ ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .user-info button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .user-info button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Игровая зона */
+        .game-area {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Стаканы */
+        .cups-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .cup {
+            font-size: 4em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .cup:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .cup.selected {
+            background: rgba(255,215,0,0.3);
+            transform: scale(1.1);
+        }
+
+        /* Информация о игре */
+        .game-info {
+            margin: 20px 0;
+        }
+
+        .score {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 1.3em;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        /* Кнопки */
+        .actions {
+            margin: 20px 0;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #ff6b6b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            color: #333;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .auth-tabs button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .auth-tabs .tab-active {
+            background: #667eea;
+            color: white;
+        }
+
+        .auth-tab input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        /* Специальные механики */
+        .special-mechanics {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .mechanic-option {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+
+        .mechanic-option:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            .cups-container {
+                gap: 15px;
+            }
+
+            .cup {
+                font-size: 3em;
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Шапка -->
+    <header class="header">
+        <h1>🎯 Наперстки</h1>
+        <div class="user-info" id="userInfo">
+            <button onclick="showAuthModal()">Войти</button>
+        </div>
+    </header>
+
+    <!-- Игровая зона -->
+    <main class="game-area">
+        <!-- Стаканы -->
+        <div class="cups-container" id="cupsContainer">
+            <div class="cup" onclick="makeGuess(0)">🥤 1</div>
+            <div class="cup" onclick="makeGuess(1)">🥤 2</div>
+            <div class="cup" onclick="makeGuess(2)">🥤 3</div>
+        </div>
+
+        <!-- Состояние игры -->
+        <div class="game-info">
+            <div class="score">
+                <span>Игрок: <span id="playerScore">0</span></span>
+                <span>Дилер: <span id="dealerScore">0</span></span>
+            </div>
+            <div class="message" id="gameMessage">Добро пожаловать в Наперстки! Войдите и начните игру.</div>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="actions" id="actions">
+            <button onclick="startNewGame()" class="btn-primary">Новая игра</button>
+        </div>
+
+        <!-- Зона для специальных механик -->
+        <div class="special-mechanics" id="specialMechanics" style="display: none;"></div>
+    </main>
+</div>
+
+<!-- Модальные окна -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h2>Авторизация</h2>
+        <div class="auth-tabs">
+            <button onclick="showTab('login')" class="tab-active">Вход</button>
+            <button onclick="showTab('register')">Регистрация</button>
+        </div>
+
+        <div id="loginTab" class="auth-tab">
+            <input type="text" id="loginUsername" placeholder="Имя пользователя">
+            <input type="password" id="loginPassword" placeholder="Пароль">
+            <button onclick="login()" class="btn-primary">Войти</button>
+        </div>
+
+        <div id="registerTab" class="auth-tab" style="display: none;">
+            <input type="text" id="regUsername" placeholder="Имя пользователя">
+            <input type="password" id="regPassword" placeholder="Пароль">
+            <input type="text" id="regNickname" placeholder="Никнейм (опционально)">
+            <button onclick="register()" class="btn-primary">Зарегистрироваться</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== JAVASCRIPT КОД ====================
+    console.log('🎯 Наперстки - игра загружается!');
+
+    const API_BASE_URL = 'http://localhost:8081';
+    let currentGameId = null;
+    let jwtToken = null;
+    let currentUser = null;
+
+    // ==================== АУТЕНТИФИКАЦИЯ ====================
+    function showAuthModal() {
+        console.log('🔓 Открываем модальное окно авторизации');
+        document.getElementById('authModal').style.display = 'block';
+    }
+
+    function hideAuthModal() {
+        document.getElementById('authModal').style.display = 'none';
+    }
+
+    function showTab(tabName) {
+        console.log('📑 Переключаем на вкладку:', tabName);
+        // Скрыть все табы
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        // Убрать активный класс
+        document.querySelectorAll('.auth-tabs button').forEach(btn => {
+            btn.classList.remove('tab-active');
+        });
+
+        // Показать выбранный таб
+        document.getElementById(tabName + 'Tab').style.display = 'block';
+        event.target.classList.add('tab-active');
+    }
+
+    async function login() {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+
+        if (!username || !password) {
+            showMessage('Заполните все поля!', 'error');
+            return;
+        }
+
+        console.log('🔐 Пытаемся войти:', username);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            console.log('📡 Ответ сервера:', response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                jwtToken = data.token;
+                currentUser = username;
+                console.log('✅ Успешный вход! Токен:', jwtToken);
+                updateUserInfo();
+                hideAuthModal();
+                showMessage('Успешный вход! Теперь можете начать игру.', 'success');
+            } else {
+                const error = await response.text();
+                console.log('❌ Ошибка входа:', error);
+                showMessage(error || 'Ошибка входа', 'error');
+            }
+        } catch (error) {
+            console.error('💥 Ошибка сети:', error);
+            showMessage('Ошибка сети: ' + error.message, 'error');
+        }
+    }
+
+    async function register() {
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        const nickname = document.getElementById('regNickname').value || username;
+
+        if (!username || !password) {
+            showMessage('Заполните имя пользователя и пароль!', 'error');
+            return;
+        }
+
+        console.log('📝 Регистрируем пользователя:', username);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password, nickname })
+            });
+
+            console.log('📡 Ответ сервера:', response.status);
+
+            if (response.ok) {
+                console.log('✅ Регистрация успешна!');
+                showMessage('Регистрация успешна! Теперь войдите.', 'success');
+                // Очищаем поля
+                document.getElementById('regUsername').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regNickname').value = '';
+                showTab('login');
+            } else {
+                const error = await response.text();
+                console.log('❌ Ошибка регистрации:', error);
+                showMessage(error, 'error');
+            }
+        } catch (error) {
+            console.error('💥 Ошибка сети:', error);
+            showMessage('Ошибка сети: ' + error.message, 'error');
+        }
+    }
+
+    function updateUserInfo() {
+        const userInfo = document.getElementById('userInfo');
+        if (currentUser) {
+            userInfo.innerHTML = `
+                <span>Привет, ${currentUser}!</span>
+                <button onclick="logout()" style="margin-left: 10px;">Выйти</button>
+            `;
+        } else {
+            userInfo.innerHTML = '<button onclick="showAuthModal()">Войти</button>';
+        }
+    }
+
+    function logout() {
+        console.log('🚪 Выход из системы');
+        jwtToken = null;
+        currentUser = null;
+        currentGameId = null;
+        updateUserInfo();
+        resetGameUI();
+        showMessage('Вы вышли из системы', 'info');
+    }
+
+    // ==================== ИГРОВАЯ ЛОГИКА ====================
+    async function startNewGame() {
+        console.log('🎮 Начинаем новую игру');
+
+        if (!jwtToken) {
+            showMessage('Сначала войдите в систему!', 'error');
+            return;
+        }
+
+        currentGameId = 'game_' + Date.now();
+        console.log('🆔 ID игры:', currentGameId);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/game/start?gameId=${currentGameId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                }
+            });
+
+            console.log('📡 Ответ сервера:', response.status);
+
+            if (response.ok) {
+                const gameState = await response.json();
+                console.log('✅ Игра началась:', gameState);
+                updateGameUI(gameState);
+                showMessage('Игра началась! Выберите стакан.', 'info');
+                enableCups();
+            } else {
+                showMessage('Ошибка начала игры', 'error');
+            }
+        } catch (error) {
+            console.error('💥 Ошибка:', error);
+            showMessage('Ошибка сети: ' + error.message, 'error');
+        }
+    }
+
+    async function makeGuess(cupIndex) {
+        console.log('🎯 Выбран стакан:', cupIndex + 1);
+
+        if (!currentGameId || !jwtToken) {
+            showMessage('Сначала начните игру!', 'error');
+            return;
+        }
+
+        highlightCup(cupIndex);
+        disableCups();
+        showMessage('Проверяем...', 'info');
+
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/game/guess?gameId=${currentGameId}&guessedPosition=${cupIndex}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }
+            );
+
+            console.log('📡 Ответ сервера:', response.status);
+
+            if (response.ok) {
+                const guessResult = await response.json();
+                console.log('📊 Результат:', guessResult);
+                processGuessResult(guessResult);
+            } else {
+                showMessage('Ошибка при угадывании', 'error');
+                enableCups();
+            }
+        } catch (error) {
+            console.error('💥 Ошибка:', error);
+            showMessage('Ошибка сети: ' + error.message, 'error');
+            enableCups();
+        }
+    }
+
+    function processGuessResult(result) {
+        updateScores(result.playerScore, result.dealerScore);
+
+        if (result.gameFinished) {
+            showGameFinished(result);
+            return;
+        }
+
+        if (result.correct && !result.dealerCheated) {
+            showMessage(result.message, 'success');
+            showBallPosition(result.actualBallPosition);
+            setTimeout(() => resetForNewRound(), 3000);
+        }
+        else if (result.dealerCheated) {
+            showMessage(result.message, 'warning');
+            // Упрощенная обработка механик
+            setTimeout(() => resetForNewRound(), 3000);
+        }
+        else {
+            showMessage(result.message, 'error');
+            showBallPosition(result.actualBallPosition);
+            setTimeout(() => resetForNewRound(), 3000);
+        }
+    }
+
+    // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+    function highlightCup(index) {
+        document.querySelectorAll('.cup').forEach((cup, i) => {
+            cup.classList.toggle('selected', i === index);
+        });
+    }
+
+    function showBallPosition(position) {
+        document.querySelectorAll('.cup').forEach((cup, i) => {
+            if (i === position) {
+                cup.textContent = '🎯';
+                cup.style.background = 'rgba(255,215,0,0.3)';
+            }
+        });
+    }
+
+    function enableCups() {
+        document.querySelectorAll('.cup').forEach(cup => {
+            cup.style.pointerEvents = 'auto';
+            cup.style.opacity = '1';
+        });
+    }
+
+    function disableCups() {
+        document.querySelectorAll('.cup').forEach(cup => {
+            cup.style.pointerEvents = 'none';
+            cup.style.opacity = '0.7';
+        });
+    }
+
+    function resetCups() {
+        document.querySelectorAll('.cup').forEach((cup, i) => {
+            cup.textContent = `🥤 ${i + 1}`;
+            cup.classList.remove('selected');
+            cup.style.background = 'rgba(255,255,255,0.1)';
+        });
+    }
+
+    function updateScores(player, dealer) {
+        document.getElementById('playerScore').textContent = player;
+        document.getElementById('dealerScore').textContent = dealer;
+    }
+
+    function showMessage(message, type = 'info') {
+        const gameMessage = document.getElementById('gameMessage');
+        gameMessage.textContent = message;
+
+        const colors = {
+            success: 'rgba(76, 175, 80, 0.3)',
+            error: 'rgba(244, 67, 54, 0.3)',
+            warning: 'rgba(255, 152, 0, 0.3)',
+            info: 'rgba(0, 0, 0, 0.2)'
+        };
+
+        gameMessage.style.background = colors[type] || colors.info;
+    }
+
+    function resetGameUI() {
+        resetCups();
+        document.getElementById('specialMechanics').style.display = 'none';
+        updateScores(0, 0);
+        showMessage('Начните новую игру!', 'info');
+        enableCups();
+    }
+
+    function resetForNewRound() {
+        resetCups();
+        document.getElementById('specialMechanics').style.display = 'none';
+        showMessage('Новый раунд! Выберите стакан.', 'info');
+        enableCups();
+    }
+
+    function showGameFinished(result) {
+        disableCups();
+        if (result.playerScore > result.dealerScore) {
+            showMessage('🎉 ПОБЕДА! Вы выиграли игру!', 'success');
+        } else {
+            showMessage('😔 Поражение! Дилер выиграл игру.', 'error');
+        }
+    }
+
+    function updateGameUI(gameState) {
+        updateScores(gameState.playerScore, gameState.dealerScore);
+    }
+
+    // Закрытие модального окна
+    window.onclick = function(event) {
+        const modal = document.getElementById('authModal');
+        if (event.target === modal) {
+            hideAuthModal();
+        }
+    }
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ DOM загружен, игра готова!');
+        updateUserInfo();
+    });
+</script>
+</body>
+</html>

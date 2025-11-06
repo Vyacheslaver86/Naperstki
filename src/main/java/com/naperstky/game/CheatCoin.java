@@ -5,38 +5,32 @@ import jakarta.persistence.*;
 @Embeddable
 public class CheatCoin {
 
-
-        public CheatCoin() {}
-
-
-
-
-
     @Enumerated(EnumType.STRING)
+    private CheatType type;
 
-        private CheatType type;  // Тип жульничества
-    @Column(name ="is used")
-    private boolean used;    // Использована ли монетка
+    @Column(name = "is_used")
+    private boolean used;
 
-        public CheatCoin(CheatType type) {
-            this.type = type;
-            this.used = false;
-        }
+    public CheatCoin() {}
 
-        // --- Геттеры и сеттеры ---
-        public CheatType getType() {
-            return type;
-        }
-
-        public boolean isUsed() {
-            return used;
-        }
-
-        public void setUsed(boolean used) {
-            this.used = used;
-        }
+    public CheatCoin(CheatType type) {
+        this.type = type;
+        this.used = false;
     }
 
+    public CheatType getType() {
+        return type;
+    }
 
+    public void setType(CheatType type) {
+        this.type = type;
+    }
 
+    public boolean isUsed() {
+        return used;
+    }
 
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+}
