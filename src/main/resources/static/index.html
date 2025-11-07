@@ -17,51 +17,186 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
             padding: 20px;
         }
 
-        /* Шапка */
-        .header {
-            display: flex;
-            justify-content: space-between;
+        /* Экран */
+        .screen {
+            display: none;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            min-height: 500px;
+            justify-content: center;
             align-items: center;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Заголовки */
+        h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             margin-bottom: 30px;
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
         }
 
-        .user-info button {
-            background: rgba(255,255,255,0.2);
+        h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        /* Кнопки */
+        .btn-primary {
+            background: #4CAF50;
             border: none;
-            padding: 10px 20px;
+            padding: 15px 30px;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 10px;
+            min-width: 200px;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #ff6b6b;
+            border: none;
+            padding: 12px 25px;
             border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        /* Формы */
+        .auth-form {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            border: none;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .auth-tabs button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: rgba(255,255,255,0.2);
             color: white;
             cursor: pointer;
             transition: background 0.3s;
         }
 
-        .user-info button:hover {
-            background: rgba(255,255,255,0.3);
+        .auth-tabs .tab-active {
+            background: #4CAF50;
+        }
+
+        .auth-tab {
+            display: none;
+        }
+
+        .auth-tab.active {
+            display: block;
+        }
+
+        /* Выбор роли */
+        .role-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .role-btn {
+            background: rgba(255,255,255,0.1);
+            border: 3px solid transparent;
+            padding: 30px 20px;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.3s;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+
+        .role-btn.selected {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .role-icon {
+            font-size: 2em;
+        }
+
+        .role-description {
+            font-size: 0.9em;
+            opacity: 0.8;
         }
 
         /* Игровая зона */
         .game-area {
-            text-align: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
+            width: 100%;
         }
 
-        /* Стаканы */
         .cups-container {
             display: flex;
             justify-content: center;
@@ -96,9 +231,16 @@
         .score {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 30px;
             font-size: 1.2em;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .score span {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
         }
 
         .message {
@@ -110,85 +252,7 @@
             background: rgba(0,0,0,0.2);
             border-radius: 10px;
             padding: 15px;
-        }
-
-        /* Кнопки */
-        .actions {
             margin: 20px 0;
-        }
-
-        .btn-primary {
-            background: #4CAF50;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            color: white;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: #45a049;
-        }
-
-        .btn-secondary {
-            background: #ff6b6b;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        /* Модальные окна */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            color: #333;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-
-        .auth-tabs button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: #f0f0f0;
-            cursor: pointer;
-        }
-
-        .auth-tabs .tab-active {
-            background: #667eea;
-            color: white;
-        }
-
-        .auth-tab input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
         }
 
         /* Специальные механики */
@@ -215,8 +279,44 @@
             background: rgba(255,255,255,0.3);
         }
 
+        /* Статистика */
+        .stats {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .user-info button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
         /* Адаптивность */
         @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .screen {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
             .cups-container {
                 gap: 15px;
             }
@@ -226,70 +326,136 @@
                 padding: 15px;
             }
 
-            .header h1 {
-                font-size: 2em;
+            .role-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .role-btn {
+                min-width: auto;
+                padding: 20px 15px;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- Шапка -->
-    <header class="header">
-        <h1>🎯 Наперстки</h1>
-        <div class="user-info" id="userInfo">
-            <button onclick="showAuthModal()">Войти</button>
-        </div>
-    </header>
-
-    <!-- Игровая зона -->
-    <main class="game-area">
-        <!-- Стаканы -->
-        <div class="cups-container" id="cupsContainer">
-            <div class="cup" onclick="makeGuess(0)">🥤 1</div>
-            <div class="cup" onclick="makeGuess(1)">🥤 2</div>
-            <div class="cup" onclick="makeGuess(2)">🥤 3</div>
-        </div>
-
-        <!-- Состояние игры -->
-        <div class="game-info">
-            <div class="score">
-                <span>Игрок: <span id="playerScore">0</span></span>
-                <span>Дилер: <span id="dealerScore">0</span></span>
-            </div>
-            <div class="message" id="gameMessage">Добро пожаловать в Наперстки! Войдите и начните игру.</div>
-        </div>
-
-        <!-- Кнопки действий -->
-        <div class="actions" id="actions">
-            <button onclick="startNewGame()" class="btn-primary">Новая игра</button>
-        </div>
-
-        <!-- Зона для специальных механик -->
-        <div class="special-mechanics" id="specialMechanics" style="display: none;"></div>
-    </main>
+<div class="user-info" id="userInfo" style="display: none;">
+    <span id="userGreeting"></span>
+    <button onclick="logout()">Выйти</button>
 </div>
 
-<!-- Модальные окна -->
-<div id="authModal" class="modal">
-    <div class="modal-content">
-        <h2>Авторизация</h2>
-        <div class="auth-tabs">
-            <button onclick="showTab('login')" class="tab-active">Вход</button>
-            <button onclick="showTab('register')">Регистрация</button>
+<div class="container">
+    <!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+    <div class="screen active" id="welcomeScreen">
+        <div>
+            <h1>🎯 Наперстки</h1>
+            <p style="font-size: 1.2em; margin-bottom: 30px; opacity: 0.9;">
+                Классическая игра в наперстки с элементами стратегии и блефа!
+            </p>
+            <button class="btn-primary" onclick="showScreen('authScreen')">Начать игру</button>
         </div>
+    </div>
 
-        <div id="loginTab" class="auth-tab">
-            <input type="text" id="loginUsername" placeholder="Имя пользователя">
-            <input type="password" id="loginPassword" placeholder="Пароль">
-            <button onclick="login()" class="btn-primary">Войти</button>
+    <!-- ЭКРАН 2: АУТЕНТИФИКАЦИЯ -->
+    <div class="screen" id="authScreen">
+        <div class="auth-form">
+            <h2>Вход в игру</h2>
+            <div class="auth-tabs">
+                <button class="tab-active" onclick="showAuthTab('login')">Вход</button>
+                <button onclick="showAuthTab('register')">Регистрация</button>
+            </div>
+
+            <div class="auth-tab active" id="loginTab">
+                <input type="text" id="loginUsername" placeholder="Имя пользователя">
+                <input type="password" id="loginPassword" placeholder="Пароль">
+                <button class="btn-primary" onclick="login()">Войти</button>
+            </div>
+
+            <div class="auth-tab" id="registerTab">
+                <input type="text" id="regUsername" placeholder="Имя пользователя">
+                <input type="password" id="regPassword" placeholder="Пароль">
+                <input type="text" id="regNickname" placeholder="Никнейм (опционально)">
+                <button class="btn-primary" onclick="register()">Зарегистрироваться</button>
+            </div>
+
+            <button class="btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top: 20px;">Назад</button>
         </div>
+    </div>
 
-        <div id="registerTab" class="auth-tab" style="display: none;">
-            <input type="text" id="regUsername" placeholder="Имя пользователя">
-            <input type="password" id="regPassword" placeholder="Пароль">
-            <input type="text" id="regNickname" placeholder="Никнейм (опционально)">
-            <button onclick="register()" class="btn-primary">Зарегистрироваться</button>
+    <!-- ЭКРАН 3: ВЫБОР РОЛИ -->
+    <div class="screen" id="roleScreen">
+        <div>
+            <h2>Выберите роль</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1em;">Кем вы хотите играть в этой партии?</p>
+
+            <div class="role-options">
+                <div class="role-btn selected" onclick="selectRole('PLAYER')">
+                    <div class="role-icon">🎯</div>
+                    <div>Игрок</div>
+                    <div class="role-description">Угадывать где шарик</div>
+                </div>
+                <div class="role-btn" onclick="selectRole('DEALER')">
+                    <div class="role-icon">🎩</div>
+                    <div>Дилер</div>
+                    <div class="role-description">Загадывать шарик</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn-primary" onclick="startGameSession()">Начать игру</button>
+                <button class="btn-secondary" onclick="showScreen('authScreen')">Назад</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 4: ИГРА -->
+    <div class="screen" id="gameScreen">
+        <div class="game-area">
+            <h2 id="gameTitle">🎯 Игра началась!</h2>
+
+            <!-- Стаканы -->
+            <div class="cups-container" id="cupsContainer">
+                <div class="cup" onclick="makeGuess(0)">🥤 1</div>
+                <div class="cup" onclick="makeGuess(1)">🥤 2</div>
+                <div class="cup" onclick="makeGuess(2)">🥤 3</div>
+            </div>
+
+            <!-- Состояние игры -->
+            <div class="game-info">
+                <div class="score">
+                    <span>Игрок: <span id="playerScore">0</span>/3</span>
+                    <span>Дилер: <span id="dealerScore">0</span>/3</span>
+                    <span>Раунд: <span id="roundNumber">1</span>/5</span>
+                </div>
+                <div class="message" id="gameMessage">Выберите стакан где шарик!</div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="actions">
+                <button class="btn-primary" onclick="nextRound()" id="nextRoundBtn" style="display: none;">Следующий раунд</button>
+                <button class="btn-secondary" onclick="endGame()">Завершить игру</button>
+            </div>
+
+            <!-- Зона для специальных механик -->
+            <div class="special-mechanics" id="specialMechanics" style="display: none;"></div>
+
+            <!-- Статистика -->
+            <div class="stats" id="gameStats" style="display: none;">
+                <h3>Статистика игры:</h3>
+                <div id="statsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 5: РЕЗУЛЬТАТЫ -->
+    <div class="screen" id="resultsScreen">
+        <div>
+            <h2 id="resultsTitle">Результаты игры</h2>
+            <div class="stats" id="finalStats" style="max-width: 500px;"></div>
+            <div style="margin-top: 30px;">
+                <button class="btn-primary" onclick="showScreen('roleScreen')">Новая игра</button>
+                <button class="btn-secondary" onclick="showScreen('welcomeScreen')">В главное меню</button>
+            </div>
         </div>
     </div>
 </div>
@@ -299,37 +465,67 @@
     console.log('🎯 Наперстки - игра загружается!');
 
     const API_BASE_URL = 'http://localhost:8081';
-    let currentGameId = null;
     let jwtToken = null;
     let currentUser = null;
+    let currentRole = 'PLAYER';
+    let currentGameId = null;
 
-    // ==================== АУТЕНТИФИКАЦИЯ ====================
-    function showAuthModal() {
-        console.log('🔓 Открываем модальное окно авторизации');
-        document.getElementById('authModal').style.display = 'block';
-    }
+    // ==================== ПЕРЕМЕННЫЕ ДЛЯ СТАТИСТИКИ ====================
+    let currentRound = 1;
+    const maxRounds = 5;
+    const winsToWinGame = 3;
+    let playerWins = 0;
+    let dealerWins = 0;
+    let gameFinished = false;
+    let gameHistory = [];
 
-    function hideAuthModal() {
-        document.getElementById('authModal').style.display = 'none';
-    }
-
-    function showTab(tabName) {
-        console.log('📑 Переключаем на вкладку:', tabName);
-        // Скрыть все табы
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.style.display = 'none';
+    // ==================== УПРАВЛЕНИЕ ЭКРАНАМИ ====================
+    function showScreen(screenId) {
+        // Скрыть все экраны
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
         });
 
-        // Убрать активный класс
+        // Показать выбранный экран
+        document.getElementById(screenId).classList.add('active');
+
+        console.log('🖥️ Переключились на экран:', screenId);
+    }
+
+    function showAuthTab(tabName) {
+        // Скрыть все табы
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Убрать активный класс с кнопок
         document.querySelectorAll('.auth-tabs button').forEach(btn => {
             btn.classList.remove('tab-active');
         });
 
         // Показать выбранный таб
-        document.getElementById(tabName + 'Tab').style.display = 'block';
+        document.getElementById(tabName + 'Tab').classList.add('active');
         event.target.classList.add('tab-active');
     }
 
+    // ==================== ВЫБОР РОЛИ ====================
+    function selectRole(role) {
+        currentRole = role;
+
+        // Обновляем визуальное выделение
+        document.querySelectorAll('.role-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+
+        console.log(`🎭 Выбрана роль: ${getRoleName(role)}`);
+    }
+
+    function getRoleName(role) {
+        return role === 'PLAYER' ? '🎯 Игрок' : '🎩 Дилер';
+    }
+
+    // ==================== АУТЕНТИФИКАЦИЯ ====================
     async function login() {
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
@@ -356,18 +552,22 @@
                 const data = await response.json();
                 jwtToken = data.token;
                 currentUser = username;
-                console.log('✅ Успешный вход! Токен:', jwtToken);
-                updateUserInfo();
-                hideAuthModal();
-                showMessage('Успешный вход! Теперь можете начать игру.', 'success');
+                console.log('✅ Успешный вход!');
+
+                // Обновляем интерфейс
+                document.getElementById('userGreeting').textContent = `Привет, ${username}!`;
+                document.getElementById('userInfo').style.display = 'block';
+
+                // Переходим к выбору роли
+                showScreen('roleScreen');
             } else {
                 const error = await response.text();
                 console.log('❌ Ошибка входа:', error);
-                showMessage(error || 'Ошибка входа', 'error');
+                alert(error || 'Ошибка входа');
             }
         } catch (error) {
             console.error('💥 Ошибка сети:', error);
-            showMessage('Ошибка сети: ' + error.message, 'error');
+            alert('Ошибка сети: ' + error.message);
         }
     }
 
@@ -377,7 +577,7 @@
         const nickname = document.getElementById('regNickname').value || username;
 
         if (!username || !password) {
-            showMessage('Заполните имя пользователя и пароль!', 'error');
+            alert('Заполните имя пользователя и пароль!');
             return;
         }
 
@@ -396,32 +596,20 @@
 
             if (response.ok) {
                 console.log('✅ Регистрация успешна!');
-                showMessage('Регистрация успешна! Теперь войдите.', 'success');
+                alert('Регистрация успешна! Теперь войдите.');
+                showAuthTab('login');
                 // Очищаем поля
                 document.getElementById('regUsername').value = '';
                 document.getElementById('regPassword').value = '';
                 document.getElementById('regNickname').value = '';
-                showTab('login');
             } else {
                 const error = await response.text();
                 console.log('❌ Ошибка регистрации:', error);
-                showMessage(error, 'error');
+                alert(error);
             }
         } catch (error) {
             console.error('💥 Ошибка сети:', error);
-            showMessage('Ошибка сети: ' + error.message, 'error');
-        }
-    }
-
-    function updateUserInfo() {
-        const userInfo = document.getElementById('userInfo');
-        if (currentUser) {
-            userInfo.innerHTML = `
-                <span>Привет, ${currentUser}!</span>
-                <button onclick="logout()" style="margin-left: 10px;">Выйти</button>
-            `;
-        } else {
-            userInfo.innerHTML = '<button onclick="showAuthModal()">Войти</button>';
+            alert('Ошибка сети: ' + error.message);
         }
     }
 
@@ -429,24 +617,61 @@
         console.log('🚪 Выход из системы');
         jwtToken = null;
         currentUser = null;
-        currentGameId = null;
-        updateUserInfo();
-        resetGameUI();
-        showMessage('Вы вышли из системы', 'info');
+        document.getElementById('userInfo').style.display = 'none';
+        resetGame();
+        showScreen('welcomeScreen');
     }
 
     // ==================== ИГРОВАЯ ЛОГИКА ====================
-    async function startNewGame() {
-        console.log('🎮 Начинаем новую игру');
+    function startGameSession() {
+        console.log('🎮 Начинаем игровую сессию как:', currentRole);
+        resetGame();
+        showScreen('gameScreen');
+        startNewGame();
+    }
 
+    function resetGame() {
+        console.log('🔄 Сброс игры');
+        currentRound = 1;
+        playerWins = 0;
+        dealerWins = 0;
+        gameFinished = false;
+        gameHistory = [];
+        currentGameId = null;
+
+        updateScores();
+        updateRoundInfo();
+        resetCups();
+        document.getElementById('specialMechanics').style.display = 'none';
+        document.getElementById('gameStats').style.display = 'none';
+        document.getElementById('nextRoundBtn').style.display = 'none';
+
+        // Обновляем заголовок в зависимости от роли
+        const roleName = getRoleName(currentRole);
+        document.getElementById('gameTitle').textContent = `${roleName} - Игра началась!`;
+
+        showMessage(currentRole === 'PLAYER'
+            ? 'Вы - Игрок! Выберите стакан где шарик.'
+            : 'Вы - Дилер! Начните раунд.', 'info');
+    }
+
+    async function startNewGame() {
         if (!jwtToken) {
-            showMessage('Сначала войдите в систему!', 'error');
+            showMessage('Ошибка авторизации', 'error');
             return;
         }
 
         currentGameId = 'game_' + Date.now();
         console.log('🆔 ID игры:', currentGameId);
 
+        if (currentRole === 'PLAYER') {
+            await startPlayerGame();
+        } else {
+            startDealerGame();
+        }
+    }
+
+    async function startPlayerGame() {
         try {
             const response = await fetch(`${API_BASE_URL}/api/game/start?gameId=${currentGameId}`, {
                 method: 'POST',
@@ -455,13 +680,9 @@
                 }
             });
 
-            console.log('📡 Ответ сервера:', response.status);
-
             if (response.ok) {
                 const gameState = await response.json();
                 console.log('✅ Игра началась:', gameState);
-                updateGameUI(gameState);
-                showMessage('Игра началась! Выберите стакан.', 'info');
                 enableCups();
             } else {
                 showMessage('Ошибка начала игры', 'error');
@@ -472,13 +693,15 @@
         }
     }
 
-    async function makeGuess(cupIndex) {
-        console.log('🎯 Выбран стакан:', cupIndex + 1);
+    function startDealerGame() {
+        // Для дилера - упрощенная логика
+        showMessage('Вы - Дилер! Нажмите "Следующий раунд" для симуляции.', 'info');
+        document.getElementById('nextRoundBtn').style.display = 'block';
+        disableCups();
+    }
 
-        if (!currentGameId || !jwtToken) {
-            showMessage('Сначала начните игру!', 'error');
-            return;
-        }
+    async function makeGuess(cupIndex) {
+        if (!currentGameId || gameFinished) return;
 
         highlightCup(cupIndex);
         disableCups();
@@ -495,12 +718,9 @@
                 }
             );
 
-            console.log('📡 Ответ сервера:', response.status);
-
             if (response.ok) {
-                const guessResult = await response.json();
-                console.log('📊 Результат:', guessResult);
-                processGuessResult(guessResult);
+                const result = await response.json();
+                processPlayerRoundResult(result, cupIndex);
             } else {
                 showMessage('Ошибка при угадывании', 'error');
                 enableCups();
@@ -512,29 +732,180 @@
         }
     }
 
-    function processGuessResult(result) {
-        updateScores(result.playerScore, result.dealerScore);
+    function processPlayerRoundResult(result, playerGuess) {
+        // Сохраняем историю
+        const roundResult = {
+            round: currentRound,
+            playerGuess: playerGuess,
+            actualPosition: result.actualBallPosition,
+            correct: result.correct,
+            dealerCheated: result.dealerCheated,
+            cheatType: result.cheatType
+        };
+        gameHistory.push(roundResult);
 
-        if (result.gameFinished) {
-            showGameFinished(result);
-            return;
-        }
-
-        if (result.correct && !result.dealerCheated) {
+        // Обновляем счет
+        if (result.correct) {
+            playerWins++;
             showMessage(result.message, 'success');
-            showBallPosition(result.actualBallPosition);
-            setTimeout(() => resetForNewRound(), 3000);
-        }
-        else if (result.dealerCheated) {
-            showMessage(result.message, 'warning');
-            // Упрощенная обработка механик
-            setTimeout(() => resetForNewRound(), 3000);
-        }
-        else {
+        } else {
+            dealerWins++;
             showMessage(result.message, 'error');
-            showBallPosition(result.actualBallPosition);
-            setTimeout(() => resetForNewRound(), 3000);
         }
+
+        showBallPosition(result.actualBallPosition);
+        updateScores();
+
+        // Проверяем механики дилера
+        if (result.dealerCheated && result.canAccuse) {
+            handleAccusationMechanic(result);
+        } else {
+            finishRound();
+        }
+    }
+
+    function nextRound() {
+        if (currentRole === 'DEALER') {
+            // Симуляция раунда для дилера
+            simulateDealerRound();
+        } else {
+            finishRound();
+        }
+    }
+
+    function simulateDealerRound() {
+        const ballPosition = Math.floor(Math.random() * 3);
+        const playerGuess = Math.floor(Math.random() * 3);
+        const isCorrect = (playerGuess === ballPosition);
+
+        // Сохраняем историю
+        const roundResult = {
+            round: currentRound,
+            playerGuess: playerGuess,
+            actualPosition: ballPosition,
+            correct: isCorrect,
+            dealerCheated: false
+        };
+        gameHistory.push(roundResult);
+
+        // Обновляем счет
+        if (isCorrect) {
+            playerWins++;
+            showMessage(`Игрок угадал! Он выбрал стакан ${playerGuess + 1}`, 'success');
+        } else {
+            dealerWins++;
+            showMessage(`Игрок не угадал! Он выбрал стакан ${playerGuess + 1}, а шарик в ${ballPosition + 1}`, 'error');
+        }
+
+        showBallPosition(ballPosition);
+        updateScores();
+        finishRound();
+    }
+
+    function finishRound() {
+        currentRound++;
+        updateRoundInfo();
+
+        if (checkGameOver()) {
+            endGame();
+        } else {
+            document.getElementById('nextRoundBtn').style.display = 'block';
+            showMessage('Раунд завершен! Нажмите "Следующий раунд"', 'info');
+        }
+    }
+
+    function handleAccusationMechanic(result) {
+        const mechanics = document.getElementById('specialMechanics');
+        mechanics.innerHTML = `
+            <h3>🎩 Дилер жульничает!</h3>
+            <p>${result.message}</p>
+            <button class="mechanic-option" onclick="accuseDealer('HIDE_IN_SLEEVE')">🎩 Спрятал в рукав</button>
+            <button class="mechanic-option" onclick="accuseDealer('SWAP_CUPS')">🔄 Переложил в стакан</button>
+            <button class="btn-secondary" onclick="surrenderRound()">Признать поражение</button>
+        `;
+        mechanics.style.display = 'block';
+    }
+
+    async function accuseDealer(mechanic) {
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/game/accuse?gameId=${currentGameId}&accusedMechanic=${mechanic}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    playerWins++;
+                    showMessage(result.message, 'success');
+                } else {
+                    dealerWins++;
+                    showMessage(result.message, 'error');
+                }
+                updateScores();
+                document.getElementById('specialMechanics').style.display = 'none';
+                finishRound();
+            }
+        } catch (error) {
+            showMessage('Ошибка сети', 'error');
+        }
+    }
+
+    function surrenderRound() {
+        dealerWins++;
+        updateScores();
+        document.getElementById('specialMechanics').style.display = 'none';
+        showMessage('Вы признали поражение', 'info');
+        finishRound();
+    }
+
+    function checkGameOver() {
+        return playerWins >= winsToWinGame || dealerWins >= winsToWinGame || currentRound > maxRounds;
+    }
+
+    function endGame() {
+        gameFinished = true;
+        showFinalResults();
+    }
+
+    function showFinalResults() {
+        const finalStats = document.getElementById('finalStats');
+        let winner = '';
+
+        if (playerWins > dealerWins) {
+            winner = '🎉 ПОБЕДА ИГРОКА!';
+        } else if (dealerWins > playerWins) {
+            winner = '😔 ПОБЕДА ДИЛЕРА!';
+        } else {
+            winner = '🤝 НИЧЬЯ!';
+        }
+
+        let statsHTML = `
+            <h3>${winner}</h3>
+            <p>Финальный счет: <strong>${playerWins} - ${dealerWins}</strong></p>
+            <p>Сыграно раундов: <strong>${currentRound - 1}</strong></p>
+            <h4>История раундов:</h4>
+        `;
+
+        gameHistory.forEach((round, index) => {
+            statsHTML += `<p>Раунд ${round.round}: `;
+            statsHTML += `Игрок выбрал ${round.playerGuess + 1}, `;
+            statsHTML += `шарик в ${round.actualPosition + 1}, `;
+            statsHTML += round.correct ? '✅ Угадал' : '❌ Не угадал';
+            if (round.dealerCheated) {
+                statsHTML += ', 🎩 Дилер жульничал';
+            }
+            statsHTML += `</p>`;
+        });
+
+        finalStats.innerHTML = statsHTML;
+        document.getElementById('resultsTitle').textContent = `Результаты игры (${getRoleName(currentRole)})`;
+        showScreen('resultsScreen');
     }
 
     // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
@@ -575,65 +946,26 @@
         });
     }
 
-    function updateScores(player, dealer) {
-        document.getElementById('playerScore').textContent = player;
-        document.getElementById('dealerScore').textContent = dealer;
+    function updateScores() {
+        document.getElementById('playerScore').textContent = playerWins;
+        document.getElementById('dealerScore').textContent = dealerWins;
     }
 
-    function showMessage(message, type = 'info') {
+    function updateRoundInfo() {
+        document.getElementById('roundNumber').textContent = currentRound;
+    }
+
+    function showMessage(message, type) {
         const gameMessage = document.getElementById('gameMessage');
         gameMessage.textContent = message;
-
-        const colors = {
-            success: 'rgba(76, 175, 80, 0.3)',
-            error: 'rgba(244, 67, 54, 0.3)',
-            warning: 'rgba(255, 152, 0, 0.3)',
-            info: 'rgba(0, 0, 0, 0.2)'
-        };
-
-        gameMessage.style.background = colors[type] || colors.info;
-    }
-
-    function resetGameUI() {
-        resetCups();
-        document.getElementById('specialMechanics').style.display = 'none';
-        updateScores(0, 0);
-        showMessage('Начните новую игру!', 'info');
-        enableCups();
-    }
-
-    function resetForNewRound() {
-        resetCups();
-        document.getElementById('specialMechanics').style.display = 'none';
-        showMessage('Новый раунд! Выберите стакан.', 'info');
-        enableCups();
-    }
-
-    function showGameFinished(result) {
-        disableCups();
-        if (result.playerScore > result.dealerScore) {
-            showMessage('🎉 ПОБЕДА! Вы выиграли игру!', 'success');
-        } else {
-            showMessage('😔 Поражение! Дилер выиграл игру.', 'error');
-        }
-    }
-
-    function updateGameUI(gameState) {
-        updateScores(gameState.playerScore, gameState.dealerScore);
-    }
-
-    // Закрытие модального окна
-    window.onclick = function(event) {
-        const modal = document.getElementById('authModal');
-        if (event.target === modal) {
-            hideAuthModal();
-        }
+        gameMessage.style.background = type === 'success' ? 'rgba(76, 175, 80, 0.3)' :
+                                      type === 'error' ? 'rgba(244, 67, 54, 0.3)' :
+                                      'rgba(0, 0, 0, 0.2)';
     }
 
     // Инициализация
     document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ DOM загружен, игра готова!');
-        updateUserInfo();
     });
 </script>
 </body>
