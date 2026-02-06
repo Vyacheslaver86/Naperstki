@@ -17,48 +17,46 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
             max-width: 800px;
+            width: 100%;
             margin: 0 auto;
             padding: 20px;
         }
 
+        /* Экраны */
+        .screen {
+            display: none;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
         /* Шапка */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 30px;
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-size: 3em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
         }
 
-        .user-info button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .user-info button:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        /* Игровая зона */
-        .game-area {
-            text-align: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
         }
 
         /* Стаканы */
@@ -67,6 +65,8 @@
             justify-content: center;
             gap: 30px;
             margin: 40px 0;
+            position: relative;
+            min-height: 180px;
         }
 
         .cup {
@@ -76,6 +76,13 @@
             padding: 20px;
             border-radius: 15px;
             background: rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+            min-width: 120px;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .cup:hover {
@@ -88,6 +95,120 @@
             transform: scale(1.1);
         }
 
+        .cup.shuffling {
+            animation: shuffleAnimation 0.8s ease-in-out;
+        }
+
+        .cup.ball-placed {
+            animation: ballDrop 0.8s ease-in-out;
+        }
+
+        .cup.swapping {
+            animation: swapAnimation 1s ease-in-out;
+        }
+
+        .cup.hiding {
+            animation: hideAnimation 1s ease-in-out;
+        }
+
+        .cup.moving-left {
+            animation: moveLeftRight 1s ease-in-out infinite alternate;
+        }
+
+        .cup.moving-right {
+            animation: moveRightLeft 1s ease-in-out infinite alternate;
+        }
+
+        .cup.circle-move {
+            animation: circleMove 2s ease-in-out;
+        }
+
+        .ball-indicator {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: gold;
+            color: black;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6em;
+            font-weight: bold;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cup.has-ball .ball-indicator {
+            opacity: 1;
+        }
+
+        /* Анимации */
+        @keyframes ballDrop {
+            0% {
+                transform: translateY(-100px) rotateX(90deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(20px) rotateX(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        @keyframes shuffleAnimation {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(80px) translateY(-40px); }
+            50% { transform: translateX(-60px) translateY(30px); }
+            75% { transform: translateX(40px) translateY(-20px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        @keyframes swapAnimation {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(120px) scale(0.9); }
+            50% { transform: translateX(180px) scale(0.8); }
+            75% { transform: translateX(120px) scale(0.9); }
+            100% { transform: translateX(0) scale(1); }
+        }
+
+        @keyframes hideAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.8) rotate(-10deg); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes moveLeftRight {
+            0% { transform: translateX(-80px); }
+            100% { transform: translateX(80px); }
+        }
+
+        @keyframes moveRightLeft {
+            0% { transform: translateX(80px); }
+            100% { transform: translateX(-80px); }
+        }
+
+        @keyframes circleMove {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100px, -50px); }
+            50% { transform: translate(0, -100px); }
+            75% { transform: translate(-100px, -50px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes fastShuffle {
+            0% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(100px) rotate(90deg); }
+            50% { transform: translateX(-100px) rotate(180deg); }
+            75% { transform: translateX(100px) rotate(270deg); }
+            100% { transform: translateX(0) rotate(360deg); }
+        }
+
         /* Информация о игре */
         .game-info {
             margin: 20px 0;
@@ -96,9 +217,16 @@
         .score {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 30px;
             font-size: 1.2em;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .score span {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 10px;
         }
 
         .message {
@@ -110,109 +238,191 @@
             background: rgba(0,0,0,0.2);
             border-radius: 10px;
             padding: 15px;
+            margin: 20px 0;
         }
 
         /* Кнопки */
         .actions {
-            margin: 20px 0;
+            margin: 30px 0;
         }
 
         .btn-primary {
             background: #4CAF50;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 40px;
             border-radius: 25px;
             color: white;
-            font-size: 1.1em;
+            font-size: 1.3em;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            margin: 10px;
+            min-width: 200px;
         }
 
         .btn-primary:hover {
             background: #45a049;
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
             background: #ff6b6b;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 30px;
             border-radius: 20px;
             color: white;
             cursor: pointer;
-            margin: 5px;
+            margin: 10px;
+            font-size: 1.1em;
         }
 
-        /* Модальные окна */
-        .modal {
-            display: none;
+        .btn-warning {
+            background: #ff9800;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 1.1em;
+        }
+
+        .btn-role {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 20px 30px;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            margin: 15px;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            min-width: 180px;
+        }
+
+        .btn-role:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-5px);
+        }
+
+        /* Формы */
+        .auth-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            background: rgba(255,255,255,0.9);
+        }
+
+        /* Роли */
+        .roles-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .role-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            min-width: 200px;
+            transition: all 0.3s;
+        }
+
+        .role-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+
+        .role-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        /* Результаты */
+        .result-message {
+            font-size: 2em;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .stats {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Анимация перемешивания - оверлей */
+        .animation-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
             z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            color: #333;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-
-        .auth-tabs button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: #f0f0f0;
-            cursor: pointer;
-        }
-
-        .auth-tabs .tab-active {
-            background: #667eea;
+            font-size: 2em;
             color: white;
+            flex-direction: column;
         }
 
-        .auth-tab input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
+        .animation-overlay.active {
+            display: flex;
         }
 
-        /* Специальные механики */
-        .special-mechanics {
+        .countdown {
+            font-size: 5em;
+            margin-bottom: 30px;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+
+        .animation-text {
+            font-size: 1.8em;
+            text-align: center;
             margin-top: 20px;
-            padding: 20px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
+            color: #fff;
         }
 
-        .mechanic-option {
-            background: rgba(255,255,255,0.2);
+        /* Выбор жульничества */
+        .cheat-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .cheat-option {
+            background: rgba(255,193,7,0.3);
             border: none;
-            padding: 15px 25px;
-            margin: 10px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 15px;
             color: white;
             cursor: pointer;
             font-size: 1.1em;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            min-width: 150px;
         }
 
-        .mechanic-option:hover {
-            background: rgba(255,255,255,0.3);
+        .cheat-option:hover {
+            background: rgba(255,193,7,0.5);
+            transform: translateY(-5px);
         }
 
         /* Адаптивность */
@@ -224,122 +434,399 @@
             .cup {
                 font-size: 3em;
                 padding: 15px;
+                min-width: 90px;
             }
 
             .header h1 {
                 font-size: 2em;
+            }
+
+            .score {
+                gap: 10px;
+            }
+
+            .roles-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary {
+                padding: 12px 30px;
+                font-size: 1.1em;
+                min-width: 150px;
+            }
+
+            .cheat-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .countdown {
+                font-size: 3.5em;
+            }
+
+            .animation-text {
+                font-size: 1.4em;
             }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Шапка -->
-    <header class="header">
-        <h1>🎯 Наперстки</h1>
-        <div class="user-info" id="userInfo">
-            <button onclick="showAuthModal()">Войти</button>
+    <!-- Экран 1: Приветствие -->
+    <div class="screen active" id="welcomeScreen">
+        <div class="header">
+            <h1>🎯 Наперстки</h1>
+            <div class="subtitle">Классическая игра на внимательность и удачу!</div>
         </div>
-    </header>
+        <div class="actions">
+            <button class="btn-primary" onclick="showScreen('authScreen')">Начать игру</button>
+        </div>
+    </div>
 
-    <!-- Игровая зона -->
-    <main class="game-area">
-        <!-- Стаканы -->
-        <div class="cups-container" id="cupsContainer">
-            <div class="cup" onclick="makeGuess(0)">🥤 1</div>
-            <div class="cup" onclick="makeGuess(1)">🥤 2</div>
-            <div class="cup" onclick="makeGuess(2)">🥤 3</div>
+    <!-- Экран 2: Авторизация -->
+    <div class="screen" id="authScreen">
+        <div class="header">
+            <h1>🔐 Вход в игру</h1>
+            <div class="subtitle">Войдите или зарегистрируйтесь</div>
+        </div>
+
+        <div class="auth-form">
+            <div id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Имя пользователя">
+                <input type="password" id="loginPassword" placeholder="Пароль">
+                <button class="btn-primary" onclick="login()">Войти</button>
+                <button class="btn-secondary" onclick="switchToRegister()">Регистрация</button>
+            </div>
+
+            <div id="registerForm" style="display: none;">
+                <input type="text" id="regUsername" placeholder="Имя пользователя">
+                <input type="password" id="regPassword" placeholder="Пароль">
+                <input type="text" id="regNickname" placeholder="Никнейм (опционально)">
+                <button class="btn-primary" onclick="register()">Зарегистрироваться</button>
+                <button class="btn-secondary" onclick="switchToLogin()">Назад к входу</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран 3: Выбор роли -->
+    <div class="screen" id="roleScreen">
+        <div class="header">
+            <h1>🎭 Выберите роль</h1>
+            <div class="subtitle">Кто вы в этой игре?</div>
+        </div>
+
+        <div class="roles-container">
+            <div class="role-card">
+                <div class="role-icon">🎯</div>
+                <h3>Игрок</h3>
+                <p>Угадывайте где шарик и разоблачайте жульничество</p>
+                <button class="btn-role" onclick="selectRole('player')">Играть как игрок</button>
+            </div>
+
+            <div class="role-card">
+                <div class="role-icon">🎩</div>
+                <h3>Дилер</h3>
+                <p>Прячьте шарик и запутывайте игрока</p>
+                <button class="btn-role" onclick="selectRole('dealer')">Играть как дилер</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран 4: Игровой процесс (Игрок) -->
+    <div class="screen" id="playerGameScreen">
+        <div class="header">
+            <h1>🎯 Угадайте где шарик!</h1>
+            <div class="user-info" id="playerUserInfo"></div>
+        </div>
+
+        <!-- Стаканы (без номеров для игрока) -->
+        <div class="cups-container" id="playerCupsContainer">
+            <div class="cup" onclick="playerMakeGuess(0)">
+                🥤
+                <div class="ball-indicator">⚪</div>
+            </div>
+            <div class="cup" onclick="playerMakeGuess(1)">
+                🥤
+                <div class="ball-indicator">⚪</div>
+            </div>
+            <div class="cup" onclick="playerMakeGuess(2)">
+                🥤
+                <div class="ball-indicator">⚪</div>
+            </div>
         </div>
 
         <!-- Состояние игры -->
         <div class="game-info">
             <div class="score">
-                <span>Игрок: <span id="playerScore">0</span></span>
-                <span>Дилер: <span id="dealerScore">0</span></span>
+                <span>Игрок: <span id="playerScore">0</span>/3</span>
+                <span>Дилер: <span id="dealerScore">0</span>/3</span>
+                <span>Раунд: <span id="playerRoundNumber">1</span>/5</span>
             </div>
-            <div class="message" id="gameMessage">Добро пожаловать в Наперстки! Войдите и начните игру.</div>
+            <div class="message" id="playerGameMessage">Ожидание начала раунда...</div>
         </div>
 
         <!-- Кнопки действий -->
-        <div class="actions" id="actions">
-            <button onclick="startNewGame()" class="btn-primary">Новая игра</button>
+        <div class="actions">
+            <button class="btn-secondary" onclick="showScreen('resultsScreen')">Завершить игру</button>
         </div>
 
         <!-- Зона для специальных механик -->
-        <div class="special-mechanics" id="specialMechanics" style="display: none;"></div>
-    </main>
-</div>
+        <div class="special-mechanics" id="playerSpecialMechanics" style="display: none;"></div>
+    </div>
 
-<!-- Модальные окна -->
-<div id="authModal" class="modal">
-    <div class="modal-content">
-        <h2>Авторизация</h2>
-        <div class="auth-tabs">
-            <button onclick="showTab('login')" class="tab-active">Вход</button>
-            <button onclick="showTab('register')">Регистрация</button>
+    <!-- Экран 4: Игровой процесс (Дилер) -->
+    <div class="screen" id="dealerGameScreen">
+        <div class="header">
+            <h1>🎩 Вы - Дилер!</h1>
+            <div class="user-info" id="dealerUserInfo"></div>
         </div>
 
-        <div id="loginTab" class="auth-tab">
-            <input type="text" id="loginUsername" placeholder="Имя пользователя">
-            <input type="password" id="loginPassword" placeholder="Пароль">
-            <button onclick="login()" class="btn-primary">Войти</button>
+        <!-- Выбор стакана для дилера -->
+        <div class="game-info" id="dealerPlacementStage">
+            <div class="message">Выберите стакан куда положить шарик:</div>
+            <div class="cups-container">
+                <div class="cup" onclick="dealerPlaceBall(0)">
+                    🥤 1
+                    <div class="ball-indicator">⚪</div>
+                </div>
+                <div class="cup" onclick="dealerPlaceBall(1)">
+                    🥤 2
+                    <div class="ball-indicator">⚪</div>
+                </div>
+                <div class="cup" onclick="dealerPlaceBall(2)">
+                    🥤 3
+                    <div class="ball-indicator">⚪</div>
+                </div>
+            </div>
         </div>
 
-        <div id="registerTab" class="auth-tab" style="display: none;">
-            <input type="text" id="regUsername" placeholder="Имя пользователя">
-            <input type="password" id="regPassword" placeholder="Пароль">
-            <input type="text" id="regNickname" placeholder="Никнейм (опционально)">
-            <button onclick="register()" class="btn-primary">Зарегистрироваться</button>
+        <!-- Ожидание хода игрока -->
+        <div class="game-info" id="dealerWaitStage" style="display: none;">
+            <div class="message" id="dealerWaitMessage">Игрок угадывает где шарик...</div>
+            <div class="cups-container" id="dealerWaitCups">
+                <div class="cup">🥤</div>
+                <div class="cup">🥤</div>
+                <div class="cup">🥤</div>
+            </div>
+        </div>
+
+        <!-- Выбор жульничества -->
+        <div class="game-info" id="dealerCheatStage" style="display: none;">
+            <div class="message">Игрок угадал! Выберите действие:</div>
+            <div class="cheat-options">
+                <button class="cheat-option" onclick="dealerCheat('hide')">🎩 Спрятать в рукав</button>
+                <button class="cheat-option" onclick="dealerCheat('swap')">🔄 Переложить шарик</button>
+                <button class="cheat-option" onclick="dealerCheat('add')">➕ Добавить стакан</button>
+                <button class="btn-secondary" onclick="dealerAcceptLoss()">Принять поражение</button>
+            </div>
+        </div>
+
+        <!-- Состояние игры -->
+        <div class="game-info">
+            <div class="score">
+                <span>Игрок: <span id="dealerViewPlayerScore">0</span>/3</span>
+                <span>Дилер: <span id="dealerViewDealerScore">0</span>/3</span>
+                <span>Раунд: <span id="dealerRoundNumber">1</span>/5</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-secondary" onclick="showScreen('resultsScreen')">Завершить игру</button>
+        </div>
+    </div>
+
+    <!-- Экран 5: Результаты -->
+    <div class="screen" id="resultsScreen">
+        <div class="header">
+            <h1>🏆 Результаты игры</h1>
+        </div>
+
+        <div class="result-message" id="finalResult"></div>
+
+        <div class="stats" id="gameStats">
+            <div id="statsContent"></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-primary" onclick="startNewGame()">Новая игра</button>
+            <button class="btn-secondary" onclick="showScreen('welcomeScreen')">В главное меню</button>
         </div>
     </div>
 </div>
 
+<!-- Оверлей для анимаций -->
+<div class="animation-overlay" id="animationOverlay">
+    <div class="animation-text" id="animationText">🎩 Дилер перемешивает стаканы...</div>
+</div>
+
 <script>
     // ==================== JAVASCRIPT КОД ====================
-    console.log('🎯 Наперстки - игра загружается!');
-
     const API_BASE_URL = 'http://localhost:8081';
     let currentGameId = null;
     let jwtToken = null;
     let currentUser = null;
+    let selectedRole = 'player';
+    let currentBallPosition = null;
+    let swapInProgress = false; // Флаг, что сейчас идет swap
+    // Переменные для логики
+    let playerGuessPosition = null;
+    let currentBallPositionBeforeCheat = null;
+
+    // ==================== ПЕРЕМЕННЫЕ ДЛЯ СТАТИСТИКИ ====================
+    let currentRound = 1;
+    const maxRounds = 5;
+    const winsToWinGame = 3;
+    let playerWins = 0;
+    let dealerWins = 0;
+    let gameFinished = false;
+    let gameHistory = [];
+
+    // ==================== АНИМАЦИИ ====================
+    function showShuffleAnimation() {
+        const overlay = document.getElementById('animationOverlay');
+        const animationText = document.getElementById('animationText');
+
+        overlay.classList.add('active');
+        animationText.textContent = '🎩 Дилер перемешивает стаканы...';
+
+        // НЕ показываем обратный отсчет - сразу запускаем анимацию стаканов
+        animateCupsShuffle();
+
+        // Скрываем оверлей через 3 секунды
+        setTimeout(() => {
+            overlay.classList.remove('active');
+        }, 3000);
+    }
+
+    function animateCupsShuffle() {
+        const cups = document.querySelectorAll('.cup');
+
+        // Показываем шарик в начальной позиции
+        cups.forEach((cup, index) => {
+            cup.classList.remove('has-ball');
+            if (index === currentBallPosition) {
+                cup.classList.add('has-ball');
+            }
+        });
+
+        // Разные анимации для разных стаканов для более реалистичного эффекта
+        cups.forEach((cup, index) => {
+            setTimeout(() => {
+                // Разные типы анимаций для визуального разнообразия
+                if (index === 0) {
+                    cup.classList.add('shuffling');
+                } else if (index === 1) {
+                    cup.classList.add('moving-left');
+                } else if (index === 2) {
+                    cup.classList.add('moving-right');
+                }
+
+                // Убираем классы анимации после их завершения
+                setTimeout(() => {
+                    cup.classList.remove('shuffling', 'moving-left', 'moving-right');
+                    cup.classList.remove('has-ball');
+                }, 2000);
+            }, index * 100);
+        });
+    }
+
+    function animateBallPlacement(position) {
+        const cups = document.querySelectorAll('.cup');
+        const cup = cups[position];
+
+        cup.classList.add('ball-placed');
+        cup.classList.add('has-ball');
+
+        // Убираем анимацию после ее завершения
+        setTimeout(() => {
+            cup.classList.remove('ball-placed');
+        }, 800);
+    }
+
+    function animateSwapBall(oldPosition, newPosition) {
+        const cups = document.querySelectorAll('.cup');
+
+        if (oldPosition >= 0 && oldPosition < cups.length) {
+            // Анимация для старого стакана (шарик "уходит")
+            const oldCup = cups[oldPosition];
+            oldCup.classList.add('swapping');
+            oldCup.classList.add('has-ball');
+
+            setTimeout(() => {
+                oldCup.classList.remove('has-ball');
+                oldCup.classList.remove('swapping');
+
+                // Анимация для нового стакана (шарик "приходит")
+                if (newPosition >= 0 && newPosition < cups.length) {
+                    const newCup = cups[newPosition];
+                    newCup.classList.add('ball-placed');
+                    newCup.classList.add('has-ball');
+
+                    setTimeout(() => {
+                        newCup.classList.remove('ball-placed');
+                        setTimeout(() => {
+                            newCup.classList.remove('has-ball');
+                        }, 1000);
+                    }, 800);
+                }
+            }, 1000);
+        }
+    }
+
+    function animateHideBall(position) {
+        const cups = document.querySelectorAll('.cup');
+        if (position >= 0 && position < cups.length) {
+            const cup = cups[position];
+            cup.classList.add('hiding');
+            cup.classList.add('has-ball');
+
+            setTimeout(() => {
+                cup.classList.remove('has-ball');
+                cup.classList.remove('hiding');
+            }, 1000);
+        }
+    }
+
+    // ==================== УПРАВЛЕНИЕ ЭКРАНАМИ ====================
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function switchToRegister() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+    }
+
+    function switchToLogin() {
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+    }
+
+    function selectRole(role) {
+        selectedRole = role;
+        if (role === 'player') {
+            showScreen('playerGameScreen');
+            initializePlayerGame();
+        } else {
+            showScreen('dealerGameScreen');
+            initializeDealerGame();
+        }
+        updateUserInfo();
+    }
 
     // ==================== АУТЕНТИФИКАЦИЯ ====================
-    function showAuthModal() {
-        console.log('🔓 Открываем модальное окно авторизации');
-        document.getElementById('authModal').style.display = 'block';
-    }
-
-    function hideAuthModal() {
-        document.getElementById('authModal').style.display = 'none';
-    }
-
-    function showTab(tabName) {
-        console.log('📑 Переключаем на вкладку:', tabName);
-        // Скрыть все табы
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.style.display = 'none';
-        });
-
-        // Убрать активный класс
-        document.querySelectorAll('.auth-tabs button').forEach(btn => {
-            btn.classList.remove('tab-active');
-        });
-
-        // Показать выбранный таб
-        document.getElementById(tabName + 'Tab').style.display = 'block';
-        event.target.classList.add('tab-active');
-    }
-
     async function login() {
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
 
         if (!username || !password) {
-            showMessage('Заполните все поля!', 'error');
+            showPlayerMessage('Заполните все поля!', 'error');
             return;
         }
-
-        console.log('🔐 Пытаемся войти:', username);
 
         try {
             const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -350,24 +837,19 @@
                 body: JSON.stringify({ username, password })
             });
 
-            console.log('📡 Ответ сервера:', response.status);
-
             if (response.ok) {
                 const data = await response.json();
                 jwtToken = data.token;
                 currentUser = username;
-                console.log('✅ Успешный вход! Токен:', jwtToken);
                 updateUserInfo();
-                hideAuthModal();
-                showMessage('Успешный вход! Теперь можете начать игру.', 'success');
+                showScreen('roleScreen');
+                showPlayerMessage('Успешный вход!', 'success');
             } else {
                 const error = await response.text();
-                console.log('❌ Ошибка входа:', error);
-                showMessage(error || 'Ошибка входа', 'error');
+                showPlayerMessage(error || 'Ошибка входа', 'error');
             }
         } catch (error) {
-            console.error('💥 Ошибка сети:', error);
-            showMessage('Ошибка сети: ' + error.message, 'error');
+            showPlayerMessage('Ошибка сети: ' + error.message, 'error');
         }
     }
 
@@ -377,11 +859,9 @@
         const nickname = document.getElementById('regNickname').value || username;
 
         if (!username || !password) {
-            showMessage('Заполните имя пользователя и пароль!', 'error');
+            showPlayerMessage('Заполните имя пользователя и пароль!', 'error');
             return;
         }
-
-        console.log('📝 Регистрируем пользователя:', username);
 
         try {
             const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -392,248 +872,892 @@
                 body: JSON.stringify({ username, password, nickname })
             });
 
-            console.log('📡 Ответ сервера:', response.status);
-
             if (response.ok) {
-                console.log('✅ Регистрация успешна!');
-                showMessage('Регистрация успешна! Теперь войдите.', 'success');
-                // Очищаем поля
+                showPlayerMessage('Регистрация успешна! Теперь войдите.', 'success');
+                switchToLogin();
                 document.getElementById('regUsername').value = '';
                 document.getElementById('regPassword').value = '';
                 document.getElementById('regNickname').value = '';
-                showTab('login');
             } else {
                 const error = await response.text();
-                console.log('❌ Ошибка регистрации:', error);
-                showMessage(error, 'error');
+                showPlayerMessage(error, 'error');
             }
         } catch (error) {
-            console.error('💥 Ошибка сети:', error);
-            showMessage('Ошибка сети: ' + error.message, 'error');
+            showPlayerMessage('Ошибка сети: ' + error.message, 'error');
         }
     }
 
     function updateUserInfo() {
-        const userInfo = document.getElementById('userInfo');
+        const playerInfo = document.getElementById('playerUserInfo');
+        const dealerInfo = document.getElementById('dealerUserInfo');
+
         if (currentUser) {
-            userInfo.innerHTML = `
-                <span>Привет, ${currentUser}!</span>
-                <button onclick="logout()" style="margin-left: 10px;">Выйти</button>
-            `;
+            const infoText = `Игрок: ${currentUser} | Роль: ${selectedRole === 'player' ? '🎯 Игрок' : '🎩 Дилер'}`;
+            if (playerInfo) playerInfo.innerHTML = infoText;
+            if (dealerInfo) dealerInfo.innerHTML = infoText;
+        }
+    }
+
+    // ==================== ЛОГИКА ИГРОКА ====================
+    function initializePlayerGame() {
+        resetGame();
+        showPlayerMessage('Ожидание начала раунда...', 'info');
+        disablePlayerCups();
+    }
+
+    function playerMakeGuess(cupIndex) {
+        if (!currentGameId) {
+            showPlayerMessage('Раунд еще не начат!', 'error');
+            return;
+        }
+
+        highlightPlayerCup(cupIndex);
+        disablePlayerCups();
+        showPlayerMessage('Дилер перемешивает стаканы...', 'info');
+
+        // Показываем анимацию перемешивания
+        showShuffleAnimation();
+
+        // Проверяем результат после анимации
+        setTimeout(() => {
+            const isCorrect = (cupIndex === currentBallPosition);
+            processPlayerGuessResult(isCorrect, cupIndex);
+        }, 3000); // Уменьшил время до 3 секунд
+    }
+
+    function processPlayerGuessResult(isCorrect, guessedPosition) {
+        if (isCorrect) {
+            showPlayerMessage('🎉 Правильно! Вы угадали!', 'success');
+            playerWins++;
+            showPlayerMessage('Дилер решает что делать...', 'info');
+
+            setTimeout(() => {
+                showPlayerMessage('Дилер сжульничал! Вы можете его обвинить.', 'warning');
+                showPlayerAccusationOptions();
+            }, 2000);
+
         } else {
-            userInfo.innerHTML = '<button onclick="showAuthModal()">Войти</button>';
+            showPlayerMessage('❌ Не угадали! Шарик был в другом стакане.', 'error');
+            dealerWins++;
+            showBallPosition(guessedPosition, false);
+        }
+
+        updateScores();
+
+        const roundResult = {
+            round: currentRound,
+            playerGuess: guessedPosition,
+            actualPosition: currentBallPosition,
+            correct: isCorrect,
+            dealerCheated: isCorrect
+        };
+        gameHistory.push(roundResult);
+
+        currentRound++;
+        updateRoundInfo();
+
+        if (checkGameOver()) {
+            showFinalResults();
         }
     }
 
-    function logout() {
-        console.log('🚪 Выход из системы');
-        jwtToken = null;
-        currentUser = null;
-        currentGameId = null;
-        updateUserInfo();
-        resetGameUI();
-        showMessage('Вы вышли из системы', 'info');
+    function showPlayerAccusationOptions() {
+        const specialMechanics = document.getElementById('playerSpecialMechanics');
+        specialMechanics.innerHTML = `
+            <h3>🎩 Дилер жульничает!</h3>
+            <p>Обвините дилера в жульничестве:</p>
+            <div class="cheat-options">
+                <button class="cheat-option" onclick="playerAccuse('hide')">🎩 Спрятал в рукав</button>
+                <button class="cheat-option" onclick="playerAccuse('swap')">🔄 Переложил шарик</button>
+                <button class="cheat-option" onclick="playerAccuse('add')">➕ Добавил стакан</button>
+                <button class="btn-secondary" onclick="playerAccept()">Принять</button>
+            </div>
+        `;
+        specialMechanics.style.display = 'block';
     }
 
-    // ==================== ИГРОВАЯ ЛОГИКА ====================
-    async function startNewGame() {
-        console.log('🎮 Начинаем новую игру');
+    function playerAccuse(cheatType) {
+        const isCorrectAccusation = Math.random() > 0.5;
 
-        if (!jwtToken) {
-            showMessage('Сначала войдите в систему!', 'error');
+        if (isCorrectAccusation) {
+            showPlayerMessage('✅ Верно! Вы разоблачили жульничество!', 'success');
+            playerWins++;
+        } else {
+            showPlayerMessage('❌ Неверно! Дилер не жульничал таким способом.', 'error');
+            dealerWins++;
+        }
+
+        document.getElementById('playerSpecialMechanics').style.display = 'none';
+        updateScores();
+        prepareNewRound();
+    }
+
+    function playerAccept() {
+        document.getElementById('playerSpecialMechanics').style.display = 'none';
+        showPlayerMessage('Вы приняли результат раунда.', 'info');
+        prepareNewRound();
+    }
+
+    // ==================== ЛОГИКА ДИЛЕРА ====================
+    function initializeDealerGame() {
+        resetGame();
+        showDealerPlacementStage();
+    }
+
+    function dealerPlaceBall(cupIndex) {
+        currentBallPosition = cupIndex;
+
+        // Анимация размещения шарика
+        animateBallPlacement(cupIndex);
+
+        showDealerMessage(`Вы поместили шарик в стакан ${cupIndex + 1}`);
+
+        // Переходим к ожиданию хода игрока
+        document.getElementById('dealerPlacementStage').style.display = 'none';
+        document.getElementById('dealerWaitStage').style.display = 'block';
+
+        // Симуляция хода игрока с анимацией
+        setTimeout(() => {
+            showShuffleAnimation();
+
+            setTimeout(() => {
+                const playerGuess = Math.floor(Math.random() * 3);
+                const isCorrect = (playerGuess === currentBallPosition);
+                processDealerTurnResult(isCorrect, playerGuess);
+            }, 3000); // Уменьшил время до 3 секунд
+        }, 1500);
+    }
+
+   function processDealerTurnResult(isCorrect, playerGuess) {
+    console.log('P: processDealerTurnResult');
+    console.log('P: isCorrect =', isCorrect);
+    console.log('P: playerGuess =', playerGuess);
+    console.log('P: currentBallPosition =', currentBallPosition);
+
+    if (isCorrect) {
+        console.log('P: Игрок угадал! Показываем опции жульничества');
+        playerGuessPosition = playerGuess;
+        currentBallPositionBeforeCheat = currentBallPosition;
+
+        console.log('P: playerGuessPosition =', playerGuessPosition);
+        console.log('P: currentBallPositionBeforeCheat =', currentBallPositionBeforeCheat);
+
+        showDealerMessage(`Игрок угадал! Он выбрал стакан ${playerGuess + 1}`);
+
+        document.getElementById('dealerWaitStage').style.display = 'none';
+        document.getElementById('dealerCheatStage').style.display = 'block';
+    } else {
+        showDealerMessage(`Игрок не угадал! Он выбрал стакан ${playerGuess + 1}`);
+        dealerWins++;
+
+        const roundResult = {
+            round: currentRound,
+            playerGuess: playerGuess,
+            actualPosition: currentBallPosition,
+            correct: false,
+            dealerCheated: false
+        };
+        gameHistory.push(roundResult);
+
+        updateScores();
+        currentRound++;
+        updateRoundInfo();
+
+        if (checkGameOver()) {
+            showFinalResults();
+        } else {
+            setTimeout(() => showDealerPlacementStage(), 2000);
+        }
+    }
+}
+
+
+
+
+
+function dealerCheat(cheatType) {
+    console.log('=== dealerCheat НАЧАЛО ===');
+    console.log('Выбран тип жульничества:', cheatType);
+    console.log('currentBallPosition:', currentBallPosition);
+    console.log('playerGuessPosition:', playerGuessPosition);
+
+    let message = '';
+    let newBallPosition = currentBallPosition;
+    let availablePositions = [];
+
+    switch(cheatType) {
+        case 'hide':
+            console.log('Выбран hide - прячем шарик');
+            message = 'Вы спрятали шарик в рукав!';
+            newBallPosition = -1;
+
+            showDealerMessage('🎩 Прячу шарик в рукав...');
+            animateHideBall(currentBallPosition);
+
+            setTimeout(() => {
+                console.log('Завершаем hide через completeDealerCheatRound');
+                completeDealerCheatRound(message, newBallPosition, cheatType);
+            }, 1500);
             return;
-        }
 
-        currentGameId = 'game_' + Date.now();
-        console.log('🆔 ID игры:', currentGameId);
+        case 'swap':
+            console.log('Выбран swap - перекладываем шарик');
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/game/start?gameId=${currentGameId}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`
-                }
-            });
-
-            console.log('📡 Ответ сервера:', response.status);
-
-            if (response.ok) {
-                const gameState = await response.json();
-                console.log('✅ Игра началась:', gameState);
-                updateGameUI(gameState);
-                showMessage('Игра началась! Выберите стакан.', 'info');
-                enableCups();
-            } else {
-                showMessage('Ошибка начала игры', 'error');
-            }
-        } catch (error) {
-            console.error('💥 Ошибка:', error);
-            showMessage('Ошибка сети: ' + error.message, 'error');
-        }
-    }
-
-    async function makeGuess(cupIndex) {
-        console.log('🎯 Выбран стакан:', cupIndex + 1);
-
-        if (!currentGameId || !jwtToken) {
-            showMessage('Сначала начните игру!', 'error');
-            return;
-        }
-
-        highlightCup(cupIndex);
-        disableCups();
-        showMessage('Проверяем...', 'info');
-
-        try {
-            const response = await fetch(
-                `${API_BASE_URL}/api/game/guess?gameId=${currentGameId}&guessedPosition=${cupIndex}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${jwtToken}`
-                    }
-                }
+            // СОЗДАЕМ СПИСОК ДОСТУПНЫХ СТАКАНОВ
+            availablePositions = [0, 1, 2].filter(pos =>
+                pos !== currentBallPosition &&
+                pos !== playerGuessPosition
             );
 
-            console.log('📡 Ответ сервера:', response.status);
+            console.log('Доступные стаканы для swap:', availablePositions);
 
-            if (response.ok) {
-                const guessResult = await response.json();
-                console.log('📊 Результат:', guessResult);
-                processGuessResult(guessResult);
-            } else {
-                showMessage('Ошибка при угадывании', 'error');
-                enableCups();
+            if (availablePositions.length === 0) {
+                console.log('ERROR: Нет доступных стаканов для swap!');
+                showDealerMessage('Ошибка: нет доступных стаканов!', 'error');
+                return;
             }
-        } catch (error) {
-            console.error('💥 Ошибка:', error);
-            showMessage('Ошибка сети: ' + error.message, 'error');
-            enableCups();
-        }
-    }
 
-    function processGuessResult(result) {
-        updateScores(result.playerScore, result.dealerScore);
-
-        if (result.gameFinished) {
-            showGameFinished(result);
+            // ПОКАЗЫВАЕМ ВЫБОР СТАКАНА ДИЛЕРУ
+            console.log('Показываем меню выбора стакана...');
+            showSwapSelectionMenu(availablePositions);
             return;
-        }
 
-        if (result.correct && !result.dealerCheated) {
-            showMessage(result.message, 'success');
-            showBallPosition(result.actualBallPosition);
-            setTimeout(() => resetForNewRound(), 3000);
-        }
-        else if (result.dealerCheated) {
-            showMessage(result.message, 'warning');
-            // Упрощенная обработка механик
-            setTimeout(() => resetForNewRound(), 3000);
-        }
-        else {
-            showMessage(result.message, 'error');
-            showBallPosition(result.actualBallPosition);
-            setTimeout(() => resetForNewRound(), 3000);
-        }
-    }
+        case 'add':
+            console.log('Выбран add - добавляем стакан');
+            message = 'Вы добавили четвертый стакан! Шарик остался на месте.';
+            newBallPosition = currentBallPosition;
+            showDealerMessage('➕ Добавляю стакан...');
 
-    // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
-    function highlightCup(index) {
-        document.querySelectorAll('.cup').forEach((cup, i) => {
-            cup.classList.toggle('selected', i === index);
-        });
-    }
-
-    function showBallPosition(position) {
-        document.querySelectorAll('.cup').forEach((cup, i) => {
-            if (i === position) {
-                cup.textContent = '🎯';
-                cup.style.background = 'rgba(255,215,0,0.3)';
+            // Анимация добавления стакана
+            const cupsContainer = document.querySelector('#dealerWaitStage .cups-container');
+            if (cupsContainer) {
+                const newCup = document.createElement('div');
+                newCup.className = 'cup';
+                newCup.textContent = '🥤 4';
+                newCup.style.animation = 'ballDrop 1s ease-in-out';
+                cupsContainer.appendChild(newCup);
             }
-        });
+
+            setTimeout(() => {
+                console.log('Завершаем add через completeDealerCheatRound');
+                completeDealerCheatRound(message, newBallPosition, cheatType, [3]);
+            }, 1500);
+            return;
+
+        default:
+            console.error('Неизвестный тип жульничества:', cheatType);
+            return;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+// ==================== ФУНКЦИИ ДЛЯ ЖУЛЬНИЧЕСТВА ====================
+
+
+
+
+
+// 1. Основная функция завершения жульничества
+function completeDealerCheatRound(message, newBallPosition, cheatType, availablePositions = []) {
+    console.log('=== completeDealerCheatRound НАЧАЛО ===');
+    console.log('cheatType:', cheatType);
+    console.log('newBallPosition:', newBallPosition);
+    console.log('message:', message);
+
+    if (cheatType === 'swap') {
+        console.log('Обрабатываем swap, вызываем handleSwapSecondChance');
+        // Для swap особая логика - даем игроку второй шанс
+        handleSwapSecondChance(newBallPosition, message);
+        return;
     }
 
-    function enableCups() {
-        document.querySelectorAll('.cup').forEach(cup => {
-            cup.style.pointerEvents = 'auto';
-            cup.style.opacity = '1';
-        });
+    console.log('Обрабатываем стандартное жульничество, вызываем completeStandardCheatRound');
+    // Для hide и add - стандартное завершение
+    completeStandardCheatRound(message, newBallPosition, cheatType);
+}
+
+
+
+
+
+
+
+
+
+
+
+// 2. Обработка второго шанса при swap
+function handleSwapSecondChance(newBallPosition, message) {
+    console.log('=== handleSwapSecondChance НАЧАЛО ===');
+    console.log('Новая позиция шарика:', newBallPosition);
+    console.log('Сообщение:', message);
+    console.log('playerGuessPosition (первый выбор игрока):', playerGuessPosition);
+
+    // Обновляем позицию шарика
+    currentBallPosition = newBallPosition;
+    console.log('currentBallPosition обновлен:', currentBallPosition);
+
+    showDealerMessage(message + ' Игрок получает второй шанс угадать!');
+
+    // Скрываем меню жульничества
+    if (document.getElementById('dealerCheatStage')) {
+        console.log('Скрываем dealerCheatStage');
+        document.getElementById('dealerCheatStage').style.display = 'none';
+    } else {
+        console.log('WARNING: dealerCheatStage не найден!');
     }
 
-    function disableCups() {
-        document.querySelectorAll('.cup').forEach(cup => {
-            cup.style.pointerEvents = 'none';
-            cup.style.opacity = '0.7';
-        });
+    // Показываем ожидание
+    console.log('Показываем dealerWaitStage');
+    document.getElementById('dealerWaitStage').style.display = 'block';
+    document.getElementById('dealerWaitMessage').textContent = 'Игрок угадывает второй раз...';
+
+    console.log('Запускаем симуляцию второго выбора через 3 секунды...');
+
+    // Симулируем второй выбор игрока через 3 секунды
+    setTimeout(() => {
+        console.log('Таймаут завершен, запускаем simulatePlayerSecondGuess()');
+        simulatePlayerSecondGuess();
+    }, 3000);
+}
+
+
+
+
+
+
+
+
+
+
+
+function handleSwapSelection(targetPosition) {
+    console.log('Дилер выбрал стакан для swap:', targetPosition);
+
+    let message = `Вы переложили шарик из стакана ${currentBallPosition + 1} в стакан ${targetPosition + 1}!`;
+
+    showDealerMessage(`🔄 Перекладываю в стакан ${targetPosition + 1}...`);
+    animateSwapBall(currentBallPosition, targetPosition);
+
+    // Скрываем меню выбора
+    document.getElementById('dealerCheatStage').style.display = 'none';
+
+    // Ждем окончания анимации и продолжаем
+    setTimeout(() => {
+        // ИСПРАВЛЕНО: вызываем completeDealerCheatRound
+        completeDealerCheatRound(message, targetPosition, 'swap');
+    }, 1500);
+}
+
+
+
+
+
+
+// 3. Симуляция второго выбора игрока
+function simulatePlayerSecondGuess() {
+    console.log('=== simulatePlayerSecondGuess НАЧАЛО ===');
+    console.log('playerGuessPosition (первый выбор):', playerGuessPosition);
+    console.log('currentBallPosition (текущая позиция):', currentBallPosition);
+
+    if (playerGuessPosition === null || playerGuessPosition === undefined) {
+        console.error('ERROR: playerGuessPosition не определен!');
+        return;
     }
 
-    function resetCups() {
-        document.querySelectorAll('.cup').forEach((cup, i) => {
-            cup.textContent = `🥤 ${i + 1}`;
-            cup.classList.remove('selected');
-            cup.style.background = 'rgba(255,255,255,0.1)';
-        });
+    // Игрок не может выбрать тот же стакан, что и в первый раз
+    const availableCups = [0, 1, 2].filter(pos => pos !== playerGuessPosition);
+    console.log('Доступные стаканы для второго выбора:', availableCups);
+
+    if (availableCups.length === 0) {
+        console.error('ERROR: Нет доступных стаканов для второго выбора!');
+        return;
     }
 
-    function updateScores(player, dealer) {
-        document.getElementById('playerScore').textContent = player;
-        document.getElementById('dealerScore').textContent = dealer;
+    const secondGuess = availableCups[Math.floor(Math.random() * availableCups.length)];
+    console.log('Игрок второй раз выбирает стакан:', secondGuess);
+
+    const isCorrect = (secondGuess === currentBallPosition);
+    console.log('Правильно ли?', isCorrect);
+
+    // Показываем выбор игрока анимацией
+    highlightDealerCupForSecondGuess(secondGuess);
+
+    showDealerMessage(`Игрок снова выбирает стакан ${secondGuess + 1}...`);
+
+    setTimeout(() => {
+        console.log('Обрабатываем результат второго выбора...');
+        if (isCorrect) {
+            console.log('Игрок угадал снова!');
+            showDealerMessage(`❌ Игрок угадал снова! Шарик был в ${currentBallPosition + 1}. Победа игрока.`, 'error');
+            playerWins++;
+            console.log('playerWins увеличен до:', playerWins);
+        } else {
+            console.log('Игрок ошибся!');
+            showDealerMessage(`✅ Игрок ошибся! Шарик был в ${currentBallPosition + 1}, а он выбрал ${secondGuess + 1}. Победа дилера.`, 'success');
+            dealerWins++;
+            console.log('dealerWins увеличен до:', dealerWins);
+        }
+
+        // Записываем результат раунда с swap
+        const roundResult = {
+            round: currentRound,
+            playerFirstGuess: playerGuessPosition,
+            playerSecondGuess: secondGuess,
+            originalBallPosition: currentBallPositionBeforeCheat,
+            finalBallPosition: currentBallPosition,
+            firstGuessCorrect: true,
+            secondGuessCorrect: isCorrect,
+            dealerCheated: true,
+            cheatType: 'swap',
+            finalResult: isCorrect ? 'player' : 'dealer'
+        };
+        gameHistory.push(roundResult);
+        console.log('Результат записан в gameHistory');
+
+        console.log('Вызываем finishRoundAfterCheat()');
+        // Завершаем раунд
+        finishRoundAfterCheat();
+    }, 2000);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 4. Вспомогательная функция для подсветки стакана при втором выборе
+function highlightDealerCupForSecondGuess(cupIndex) {
+    const cups = document.querySelectorAll('#dealerWaitCups .cup');
+    cups.forEach((cup, index) => {
+        cup.classList.remove('selected');
+        if (index === cupIndex) {
+            cup.classList.add('selected');
+            cup.style.background = 'rgba(255, 215, 0, 0.5)';
+        }
+    });
+}
+
+// 5. Завершение для стандартных cheat (hide, add)
+function completeStandardCheatRound(message, newBallPosition, cheatType) {
+    console.log('completeStandardCheatRound:', cheatType);
+
+    currentBallPosition = newBallPosition;
+
+    showDealerMessage(message);
+
+    // Записываем результат раунда
+    const roundResult = {
+        round: currentRound,
+        playerGuess: playerGuessPosition,
+        originalBallPosition: currentBallPositionBeforeCheat,
+        finalBallPosition: newBallPosition,
+        correct: true,
+        dealerCheated: true,
+        cheatType: cheatType,
+        finalResult: 'dealer'
+    };
+    gameHistory.push(roundResult);
+
+    // Дилер выигрывает раунд благодаря жульничеству
+    dealerWins++;
+
+    // Завершаем раунд
+    finishRoundAfterCheat();
+}
+
+// 6. Общее завершение раунда после жульничества
+function finishRoundAfterCheat() {
+    console.log('finishRoundAfterCheat');
+
+    // Обновляем счет
+    updateScores();
+
+    // Сбрасываем временные переменные
+    playerGuessPosition = null;
+    currentBallPositionBeforeCheat = null;
+
+    // Переходим к следующему раунду
+    currentRound++;
+    updateRoundInfo();
+
+    // Проверяем завершение игры
+    if (checkGameOver()) {
+        setTimeout(() => {
+            showFinalResults();
+        }, 3000);
+    } else {
+        // Возвращаемся к размещению шарика для нового раунда
+        setTimeout(() => {
+            showDealerPlacementStage();
+        }, 3000);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+function showSwapSelectionMenu(availablePositions) {
+    console.log('Показываем меню выбора стакана для swap');
+
+    // Скрываем меню жульничества
+    document.getElementById('dealerCheatStage').style.display = 'none';
+
+    // Создаем HTML для выбора стакана
+    let swapSelectionHTML = `
+        <div class="message">🎩 Выберите куда переложить шарик:</div>
+        <div class="cups-container">
+            ${[0, 1, 2].map(i => {
+                if (i === currentBallPosition) {
+                    return `<div class="cup" style="background: rgba(255,0,0,0.3); cursor: not-allowed;">
+                        🥤 ${i + 1}<br>
+                        <small>❌ шарик здесь</small>
+                    </div>`;
+                } else if (i === playerGuessPosition) {
+                    return `<div class="cup" style="background: rgba(255,255,0,0.3); cursor: not-allowed;">
+                        🥤 ${i + 1}<br>
+                        <small>🎯 игрок угадал</small>
+                    </div>`;
+                } else if (availablePositions.includes(i)) {
+                    return `<div class="cup" onclick="handleSwapSelection(${i})" style="cursor: pointer;">
+                        🥤 ${i + 1}<br>
+                        <small>✅ можно</small>
+                    </div>`;
+                } else {
+                    return `<div class="cup" style="opacity: 0.5; cursor: not-allowed;">
+                        🥤 ${i + 1}<br>
+                        <small>🚫 нельзя</small>
+                    </div>`;
+                }
+            }).join('')}
+        </div>
+        <div style="margin-top: 20px;">
+            <button class="btn-secondary" onclick="cancelSwap()">Отмена</button>
+        </div>
+    `;
+
+    // Временно изменяем содержимое dealerCheatStage
+    let cheatStage = document.getElementById('dealerCheatStage');
+    cheatStage.innerHTML = swapSelectionHTML;
+    cheatStage.style.display = 'block';
+}
+
+function handleSwapSelection(targetPosition) {
+    console.log('Дилер выбрал стакан для swap:', targetPosition);
+
+    let message = `Вы переложили шарик из стакана ${currentBallPosition + 1} в стакан ${targetPosition + 1}!`;
+
+    showDealerMessage(`🔄 Перекладываю в стакан ${targetPosition + 1}...`);
+    animateSwapBall(currentBallPosition, targetPosition);
+
+    // Скрываем меню выбора
+    document.getElementById('dealerCheatStage').style.display = 'none';
+
+    // Ждем окончания анимации и продолжаем
+    setTimeout(() => {
+        continueAfterCheat(message, targetPosition, 'swap', [targetPosition]);
+    }, 1500);
+}
+
+function cancelSwap() {
+    console.log('Отмена swap');
+    // Возвращаемся к выбору жульничества
+    let cheatStage = document.getElementById('dealerCheatStage');
+    cheatStage.innerHTML = `
+        <div class="message">Игрок угадал! Выберите действие:</div>
+        <div class="cheat-options">
+            <button class="cheat-option" onclick="dealerCheat('hide')">🎩 Спрятать в рукав</button>
+            <button class="cheat-option" onclick="dealerCheat('swap')">🔄 Переложить шарик</button>
+            <button class="cheat-option" onclick="dealerCheat('add')">➕ Добавить стакан</button>
+            <button class="btn-secondary" onclick="dealerAcceptLoss()">Принять поражение</button>
+        </div>
+    `;
+    cheatStage.style.display = 'block';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    function dealerAcceptLoss() {
+        showDealerMessage('Вы приняли поражение в раунде.');
+
+        const roundResult = {
+            round: currentRound,
+            playerGuess: playerGuessPosition,
+            actualPosition: currentBallPosition,
+            correct: true,
+            dealerCheated: false
+        };
+        gameHistory.push(roundResult);
+
+        playerWins++;
+        document.getElementById('dealerCheatStage').style.display = 'none';
+        updateScores();
+        currentRound++;
+        updateRoundInfo();
+
+        playerGuessPosition = null;
+        currentBallPositionBeforeCheat = null;
+
+        if (checkGameOver()) {
+            showFinalResults();
+        } else {
+            setTimeout(() => showDealerPlacementStage(), 2000);
+        }
     }
 
-    function showMessage(message, type = 'info') {
-        const gameMessage = document.getElementById('gameMessage');
+    function showDealerPlacementStage() {
+        document.getElementById('dealerPlacementStage').style.display = 'block';
+        document.getElementById('dealerWaitStage').style.display = 'none';
+        document.getElementById('dealerCheatStage').style.display = 'none';
+        showDealerMessage('Выберите стакан куда положить шарик:');
+    }
+
+    // ==================== ОБЩИЕ ФУНКЦИИ ====================
+    function showPlayerMessage(message, type = 'info') {
+        const gameMessage = document.getElementById('playerGameMessage');
         gameMessage.textContent = message;
+        gameMessage.style.background = getMessageColor(type);
+    }
 
+    function showDealerMessage(message, type = 'info') {
+        const waitMessage = document.getElementById('dealerWaitMessage');
+        if (waitMessage) waitMessage.textContent = message;
+        if (type !== 'info') {
+            waitMessage.style.background = getMessageColor(type);
+        }
+    }
+
+    function getMessageColor(type) {
         const colors = {
             success: 'rgba(76, 175, 80, 0.3)',
             error: 'rgba(244, 67, 54, 0.3)',
             warning: 'rgba(255, 152, 0, 0.3)',
             info: 'rgba(0, 0, 0, 0.2)'
         };
-
-        gameMessage.style.background = colors[type] || colors.info;
+        return colors[type] || colors.info;
     }
 
-    function resetGameUI() {
-        resetCups();
-        document.getElementById('specialMechanics').style.display = 'none';
-        updateScores(0, 0);
-        showMessage('Начните новую игру!', 'info');
-        enableCups();
+    function highlightPlayerCup(index) {
+        document.querySelectorAll('#playerCupsContainer .cup').forEach((cup, i) => {
+            cup.classList.toggle('selected', i === index);
+        });
     }
 
-    function resetForNewRound() {
-        resetCups();
-        document.getElementById('specialMechanics').style.display = 'none';
-        showMessage('Новый раунд! Выберите стакан.', 'info');
-        enableCups();
-    }
-
-    function showGameFinished(result) {
-        disableCups();
-        if (result.playerScore > result.dealerScore) {
-            showMessage('🎉 ПОБЕДА! Вы выиграли игру!', 'success');
-        } else {
-            showMessage('😔 Поражение! Дилер выиграл игру.', 'error');
+    function showBallPosition(position, isCorrect) {
+        const cups = document.querySelectorAll('.cup');
+        if (cups[position]) {
+            cups[position].textContent = isCorrect ? '🎯' : '❌';
+            cups[position].style.background = isCorrect ? 'rgba(255,215,0,0.3)' : 'rgba(244,67,54,0.3)';
         }
     }
 
-    function updateGameUI(gameState) {
-        updateScores(gameState.playerScore, gameState.dealerScore);
+    function disablePlayerCups() {
+        document.querySelectorAll('#playerCupsContainer .cup').forEach(cup => {
+            cup.style.pointerEvents = 'none';
+        });
     }
 
-    // Закрытие модального окна
-    window.onclick = function(event) {
-        const modal = document.getElementById('authModal');
-        if (event.target === modal) {
-            hideAuthModal();
+    function enablePlayerCups() {
+        document.querySelectorAll('#playerCupsContainer .cup').forEach(cup => {
+            cup.style.pointerEvents = 'auto';
+            cup.textContent = '🥤';
+            cup.style.background = 'rgba(255,255,255,0.1)';
+            cup.classList.remove('selected');
+            cup.classList.remove('has-ball', 'shuffling', 'moving-left', 'moving-right');
+        });
+    }
+
+    function resetGame() {
+        currentRound = 1;
+        playerWins = 0;
+        dealerWins = 0;
+        gameFinished = false;
+        gameHistory = [];
+        currentGameId = 'game_' + Date.now();
+        currentBallPosition = null;
+        playerGuessPosition = null;
+        currentBallPositionBeforeCheat = null;
+
+        updateScores();
+        updateRoundInfo();
+        enablePlayerCups();
+        document.getElementById('playerSpecialMechanics').style.display = 'none';
+    }
+
+    function updateScores() {
+        document.getElementById('playerScore').textContent = playerWins;
+        document.getElementById('dealerScore').textContent = dealerWins;
+        document.getElementById('dealerViewPlayerScore').textContent = playerWins;
+        document.getElementById('dealerViewDealerScore').textContent = dealerWins;
+    }
+
+    function updateRoundInfo() {
+        document.getElementById('playerRoundNumber').textContent = currentRound;
+        document.getElementById('dealerRoundNumber').textContent = currentRound;
+    }
+
+    function checkGameOver() {
+        if (playerWins >= winsToWinGame || dealerWins >= winsToWinGame || currentRound > maxRounds) {
+            gameFinished = true;
+            return true;
+        }
+        return false;
+    }
+
+    function prepareNewRound() {
+        currentBallPosition = null;
+        playerGuessPosition = null;
+        currentBallPositionBeforeCheat = null;
+        enablePlayerCups();
+
+        if (selectedRole === 'player') {
+            showPlayerMessage('Ожидание начала нового раунда...', 'info');
+        }
+
+        setTimeout(() => {
+            if (selectedRole === 'player') {
+                showPlayerMessage('Новый раунд начался! Угадайте где шарик.', 'info');
+            }
+        }, 2000);
+    }
+
+
+
+
+
+
+
+
+   function showFinalResults() {
+    let resultMessage = '';
+    if (playerWins > dealerWins) {
+        resultMessage = '🎉 ПОБЕДА ИГРОКА!';
+    } else if (dealerWins > playerWins) {
+        resultMessage = '🎩 ПОБЕДА ДИЛЕРА!';
+    } else {
+        resultMessage = '🤝 Ничья!';
+    }
+
+    document.getElementById('finalResult').textContent = `${resultMessage} Счет: ${playerWins}-${dealerWins}`;
+
+    const statsContent = document.getElementById('statsContent');
+    let statsHTML = `<p>Финальный счет: <strong>${playerWins}-${dealerWins}</strong></p>`;
+    statsHTML += `<p>Сыграно раундов: <strong>${currentRound - 1}</strong></p>`;
+    statsHTML += `<h4>История раундов:</h4>`;
+
+    gameHistory.forEach((round, index) => {
+        statsHTML += `<p style="margin: 5px 0; padding: 5px; border-bottom: 1px solid rgba(255,255,255,0.1);">`;
+        statsHTML += `<strong>Раунд ${round.round}:</strong> `;
+
+        if (round.playerFirstGuess !== undefined) {
+            // Это раунд с swap
+            statsHTML += `Первый выбор: ${round.playerFirstGuess + 1}, `;
+            statsHTML += `Второй выбор: ${round.playerSecondGuess + 1}, `;
+            statsHTML += `Шарик был: ${round.originalBallPosition + 1} → ${round.finalBallPosition + 1}, `;
+            statsHTML += round.secondGuessCorrect ? '✅ Угадал' : '❌ Не угадал';
+            statsHTML += ` (swap)`;
+        } else {
+            // Обычный раунд
+            statsHTML += `Игрок → ${round.playerGuess + 1}, `;
+            if (round.actualPosition !== undefined) {
+                statsHTML += `Шарик → ${round.actualPosition + 1}, `;
+            }
+            statsHTML += round.correct ? '✅ Угадал' : '❌ Не угадал';
+
+            if (round.dealerCheated) {
+                statsHTML += `, 🎩 ${round.cheatType}`;
+            }
+        }
+        statsHTML += `</p>`;
+    });
+
+    statsContent.innerHTML = statsHTML;
+    showScreen('resultsScreen');
+}
+
+function startNewGame() {
+    resetGame();
+    if (selectedRole === 'player') {
+        showScreen('playerGameScreen');
+        showPlayerMessage('Готовы к новой игре!', 'info');
+    } else {
+        showScreen('dealerGameScreen');
+        showDealerPlacementStage();
+    }
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎯 Игра "Наперстки" загружена!');
+    showScreen('welcomeScreen');
+});
+
+
+
+
+
+
+
+
+
+
+
+    function startNewGame() {
+        resetGame();
+        if (selectedRole === 'player') {
+            showScreen('playerGameScreen');
+            showPlayerMessage('Готовы к новой игре!', 'info');
+        } else {
+            showScreen('dealerGameScreen');
+            showDealerPlacementStage();
         }
     }
 
     // Инициализация
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('✅ DOM загружен, игра готова!');
-        updateUserInfo();
+        console.log('🎯 Игра "Наперстки" загружена!');
+        showScreen('welcomeScreen');
     });
 </script>
 </body>

@@ -1,6 +1,6 @@
 package com.naperstky.mvc.service;
 
-import com.naperstky.mvc.PlayerDAO;
+import com.naperstky.mvc.repository.PlayerDAO;
 import com.naperstky.player.Player;
 import com.naperstky.security.UserAccount;
 import lombok.RequiredArgsConstructor;

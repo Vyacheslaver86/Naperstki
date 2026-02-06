@@ -1,4 +1,4 @@
-package com.naperstky.mvc;
+package com.naperstky.mvc.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface PlayerDAO extends JpaRepository<Player,Long> {
 
         Optional<Player> findByUserAccountId(Long userAccountId); // Ищем по ID аккаунта
-    }
+}
 
 
 
